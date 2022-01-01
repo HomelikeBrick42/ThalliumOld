@@ -18,6 +18,12 @@ public:
     void Show() final;
     void Hide() final;
 
+    void EnableCursor()  final;
+    void DisableCursor() final;
+    bool IsCursorEnabled() final {
+        return !CursorDisabled;
+    }
+
     uint32_t GetWidth() final {
         return Width;
     }
@@ -42,8 +48,9 @@ private:
     HWND WindowHandle  = nullptr;
     HDC DeviceContext  = nullptr;
 private:
-    uint32_t Width  = 0;
-    uint32_t Height = 0;
+    uint32_t Width      = 0;
+    uint32_t Height     = 0;
+    bool CursorDisabled = false;
 private:
     CloseCallbackFunc CloseCallback   = nullptr;
     ResizeCallbackFunc ResizeCallback = nullptr;

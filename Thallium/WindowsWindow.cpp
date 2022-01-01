@@ -69,6 +69,16 @@ WindowsWindow::WindowsWindow(uint32_t width, uint32_t height, const std::string&
         std::cerr << std::format("Unable to get device context: 0x{:x}", GetLastError()) << std::endl;
         std::exit(1);
     }
+
+    // TODO: Check if this works with multiple windows
+    RAWINPUTDEVICE rawInputDevice = {
+        .usUsagePage = 0x01,
+        .usUsage     = 0x02,
+    };
+    if (!RegisterRawInputDevices(&rawInputDevice, 1, sizeof(RAWINPUTDEVICE))) {
+        std::cerr << std::format("Unable to register raw input: 0x{:x}", GetLastError()) << std::endl;
+        std::exit(1);
+    }
 }
 
 WindowsWindow::~WindowsWindow() {
@@ -90,6 +100,23 @@ void WindowsWindow::Show() {
 
 void WindowsWindow::Hide() {
     ShowWindow(WindowHandle, SW_HIDE);
+}
+
+void WindowsWindow::EnableCursor() {
+    while (ShowCursor(true) < 0) {
+    }
+    ClipCursor(nullptr);
+    CursorDisabled = false;
+}
+
+void WindowsWindow::DisableCursor() {
+    while (ShowCursor(false) >= 0) {
+    }
+    RECT rect = {};
+    GetClientRect(WindowHandle, &rect);
+    MapWindowPoints(WindowHandle, nullptr, reinterpret_cast<POINT*>(&rect), sizeof(RECT) / sizeof(POINT));
+    ClipCursor(&rect);
+    CursorDisabled = true;
 }
 
 LRESULT WINAPI WindowsWindow::StaticWindowMessageCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -173,6 +200,10 @@ LRESULT WINAPI WindowsWindow::WindowMessageCallback(HWND hWnd, UINT message, WPA
                         key = KeyCode_Space;
                     } break;
 
+                    case VK_ESCAPE: {
+                        key = KeyCode_Escape;
+                    } break;
+
                     default: {
                         key = KeyCode_Unknown;
                     } break;
@@ -183,6 +214,25 @@ LRESULT WINAPI WindowsWindow::WindowMessageCallback(HWND hWnd, UINT message, WPA
             }
             result = DefWindowProcA(hWnd, message, wParam, lParam);
         } break;
+
+        case WM_SETFOCUS: {
+            if (CursorDisabled) {
+                while (ShowCursor(false) >= 0) {
+                }
+                RECT rect = {};
+                GetClientRect(WindowHandle, &rect);
+                MapWindowPoints(WindowHandle, nullptr, reinterpret_cast<POINT*>(&rect), sizeof(RECT) / sizeof(POINT));
+                ClipCursor(&rect);
+            }
+        } break;
+
+        case WM_KILLFOCUS: {
+            if (CursorDisabled) {
+                while (ShowCursor(true) < 0) {
+                }
+                ClipCursor(nullptr);
+            }
+        }
 
         default: {
             result = DefWindowProcA(hWnd, message, wParam, lParam);

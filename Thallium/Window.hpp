@@ -24,6 +24,10 @@ public:
     virtual void Show() = 0;
     virtual void Hide() = 0;
 
+    virtual void EnableCursor()    = 0;
+    virtual void DisableCursor()   = 0;
+    virtual bool IsCursorEnabled() = 0;
+
     virtual uint32_t GetWidth()  = 0;
     virtual uint32_t GetHeight() = 0;
 public:

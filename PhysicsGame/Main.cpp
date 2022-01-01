@@ -34,6 +34,14 @@ int main(int, char**) {
     bool keys[KeyCode_MaxCount] = {};
     window->SetKeyCallback([&](Ref<Window> window, KeyCode key, bool pressed) {
         keys[key] = pressed;
+
+        if (key == KeyCode_Escape && pressed) {
+            if (window->IsCursorEnabled()) {
+                window->DisableCursor();
+            } else {
+                window->EnableCursor();
+            }
+        }
     });
 
     Ref<Shader> shader = renderer->CreateShader("Basic.shader");
@@ -66,6 +74,7 @@ int main(int, char**) {
     double lastTime = clock.GetElapsed();
 
     window->Show();
+    window->DisableCursor();
     while (running) {
         window->Update();
 
@@ -100,6 +109,7 @@ int main(int, char**) {
 
         renderer->Present();
     }
+    window->EnableCursor();
     window->Hide();
 
     return 0;
