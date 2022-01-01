@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/fwd.hpp>
+
 #include <utility>
 
 template<class T, class = void>

@@ -2,9 +2,9 @@
 
 #version 440 core
 
-layout(location = 0) uniform mat4 u_ModelMatrix = mat4(1.0);
-layout(location = 1) uniform mat4 u_ViewMatrix = mat4(1.0);
-layout(location = 2) uniform mat4 u_ProjectionMatrix = mat4(1.0);
+uniform mat4 u_ModelMatrix = mat4(1.0);
+uniform mat4 u_ViewMatrix = mat4(1.0);
+uniform mat4 u_ProjectionMatrix = mat4(1.0);
 
 #shader vertex
 

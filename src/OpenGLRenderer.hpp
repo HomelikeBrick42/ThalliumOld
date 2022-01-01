@@ -3,6 +3,8 @@
 #include "Base.hpp"
 #include "Renderer.hpp"
 
+#include <glm/mat4x4.hpp>
+
 constexpr uint32_t GL_COLOR_BUFFER_BIT = 16384;
 constexpr uint32_t GL_DEPTH_BUFFER_BIT = 256;
 
@@ -94,8 +96,13 @@ public:
 public:
     virtual ~OpenGLRenderer() = default;
 public:
-    void Draw(Ref<VertexBuffer> vertexBuffer, Ref<Shader> shader, size_t first, size_t count) final;
-    void DrawIndexed(Ref<VertexBuffer> vertexBuffer, Ref<IndexBuffer> indexBuffer, Ref<Shader> shader) final;
+    void Begin(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) final;
+    void End() final;
+    void Draw(Ref<VertexBuffer> vertexBuffer, Ref<Shader> shader, size_t first, size_t count, const glm::mat4& transform) final;
+    void DrawIndexed(Ref<VertexBuffer> vertexBuffer,
+                     Ref<IndexBuffer> indexBuffer,
+                     Ref<Shader> shader,
+                     const glm::mat4& transform) final;
     Ref<VertexBuffer> CreateVertexBuffer(const void* data, size_t size, const std::span<VertexBuffer::Element>& layout) final;
     Ref<IndexBuffer> CreateIndexBuffer(const std::span<uint32_t>& indices) final;
 public:
@@ -121,6 +128,9 @@ protected:
 #define OPENGL_FUNCTION(ret, name, ...) name##FunctionType* name##Func;
     OPENGL_FUNCTIONS
 #undef OPENGL_FUNCTION
+private:
+    glm::mat4 ViewMatrix;
+    glm::mat4 ProjectionMatrix;
 };
 
 #if !defined(KEEP_OPENGL_FUNCTIONS)

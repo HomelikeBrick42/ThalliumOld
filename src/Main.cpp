@@ -2,7 +2,6 @@
 #include "Window.hpp"
 #include "Renderer.hpp"
 #include "OpenGLRenderer.hpp"
-#include "OpenGLShader.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -22,7 +21,7 @@ int main(int, char**) {
         renderer->OnResize(width, height);
     });
 
-    Ref<OpenGLShader> shader = renderer->CreateShader("Basic.shader").As<OpenGLShader>();
+    Ref<Shader> shader = renderer->CreateShader("Basic.shader");
 
     struct Vertex {
         struct {
@@ -59,11 +58,12 @@ int main(int, char**) {
         renderer->glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         renderer->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), { 0.5f, -0.5f, 0.0f });
+        renderer->Begin(glm::mat4(1.0f), glm::mat4(1.0f));
 
-        shader->Bind();
-        renderer->glUniformMatrix4fv(0, 1, false, glm::value_ptr(transform));
-        renderer->DrawIndexed(vertexBuffer, indexBuffer, shader);
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), { 0.5f, -0.5f, 0.0f });
+        renderer->DrawIndexed(vertexBuffer, indexBuffer, shader, transform);
+
+        renderer->End();
 
         renderer->Present();
     }

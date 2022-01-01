@@ -3,6 +3,8 @@
 #include "OpenGLVertexBuffer.hpp"
 #include "OpenGLIndexBuffer.hpp"
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -79,15 +81,39 @@ Ref<IndexBuffer> OpenGLRenderer::CreateIndexBuffer(const std::span<uint32_t>& in
     return Ref<OpenGLIndexBuffer>::Create(this, indices);
 }
 
-void OpenGLRenderer::Draw(Ref<VertexBuffer> vertexBuffer, Ref<Shader> shader, size_t first, size_t count) {
+void OpenGLRenderer::Begin(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
+    ViewMatrix       = viewMatrix;
+    ProjectionMatrix = projectionMatrix;
+}
+
+void OpenGLRenderer::End() {
+    ViewMatrix       = glm::mat4(1.0f);
+    ProjectionMatrix = glm::mat4(1.0f);
+}
+
+void OpenGLRenderer::Draw(
+    Ref<VertexBuffer> vertexBuffer, Ref<Shader> shader, size_t first, size_t count, const glm::mat4& transform) {
     vertexBuffer.As<OpenGLVertexBuffer>()->Bind();
-    shader.As<OpenGLShader>()->Bind();
+    Ref<OpenGLShader> openGLShader = shader.As<OpenGLShader>();
+    openGLShader->Bind();
+    glUniformMatrix4fv(glGetUniformLocation(openGLShader->Program, "u_ModelMatrix"), 1, false, glm::value_ptr(transform));
+    glUniformMatrix4fv(glGetUniformLocation(openGLShader->Program, "u_ViewMatrix"), 1, false, glm::value_ptr(ViewMatrix));
+    glUniformMatrix4fv(
+        glGetUniformLocation(openGLShader->Program, "u_ProjectionMatrix"), 1, false, glm::value_ptr(ProjectionMatrix));
     glDrawArrays(GL_TRIANGLES, static_cast<int32_t>(first), static_cast<uint32_t>(count));
 }
 
-void OpenGLRenderer::DrawIndexed(Ref<VertexBuffer> vertexBuffer, Ref<IndexBuffer> indexBuffer, Ref<Shader> shader) {
+void OpenGLRenderer::DrawIndexed(Ref<VertexBuffer> vertexBuffer,
+                                 Ref<IndexBuffer> indexBuffer,
+                                 Ref<Shader> shader,
+                                 const glm::mat4& transform) {
     vertexBuffer.As<OpenGLVertexBuffer>()->Bind();
     indexBuffer.As<OpenGLIndexBuffer>()->Bind();
-    shader.As<OpenGLShader>()->Bind();
+    Ref<OpenGLShader> openGLShader = shader.As<OpenGLShader>();
+    openGLShader->Bind();
+    glUniformMatrix4fv(glGetUniformLocation(openGLShader->Program, "u_ModelMatrix"), 1, false, glm::value_ptr(transform));
+    glUniformMatrix4fv(glGetUniformLocation(openGLShader->Program, "u_ViewMatrix"), 1, false, glm::value_ptr(ViewMatrix));
+    glUniformMatrix4fv(
+        glGetUniformLocation(openGLShader->Program, "u_ProjectionMatrix"), 1, false, glm::value_ptr(ProjectionMatrix));
     glDrawElements(GL_TRIANGLES, static_cast<uint32_t>(indexBuffer->GetIndexCount()), GL_UNSIGNED_INT, nullptr);
 }
