@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
-project(Physics)
+project(Thallium)
 
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(
-        Physics
+        Thallium
         src/Base.hpp
         src/IndexBuffer.hpp
         src/Main.cpp
@@ -26,4 +26,4 @@ add_executable(
         src/WindowsOpenGLRenderer.hpp
         src/WindowsWindow.cpp
         src/WindowsWindow.hpp src/Matrix.hpp)
-target_link_libraries(Physics OpenGL32)
+target_link_libraries(Thallium OpenGL32)
