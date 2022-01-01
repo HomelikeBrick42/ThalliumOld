@@ -2,7 +2,9 @@
 #include "Window.hpp"
 #include "Renderer.hpp"
 #include "OpenGLRenderer.hpp"
+#include "OpenGLShader.hpp"
 #include "Vector.hpp"
+#include "Matrix.hpp"
 
 #include <iostream>
 #include <format>
@@ -19,7 +21,7 @@ int main(int, char**) {
         renderer->OnResize(width, height);
     });
 
-    Ref<Shader> shader = renderer->CreateShader("Basic.shader");
+    Ref<OpenGLShader> shader = renderer->CreateShader("Basic.shader").As<OpenGLShader>();
 
     struct Vertex {
         struct {
@@ -56,6 +58,13 @@ int main(int, char**) {
         renderer->glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         renderer->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        Matrix4x4f projectionMatrix = Matrix4x4f_Identity();
+        projectionMatrix[3][0]      = 0.5f;
+        projectionMatrix[3][1]      = -0.5f;
+        projectionMatrix[3][2]      = 0.0f;
+
+        shader->Bind();
+        renderer->glUniformMatrix4fv(2, 1, false, &projectionMatrix[0][0]);
         renderer->DrawIndexed(vertexBuffer, indexBuffer, shader);
 
         renderer->Present();

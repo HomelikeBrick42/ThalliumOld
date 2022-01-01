@@ -73,6 +73,10 @@ constexpr uint32_t GL_TRIANGLES = 4;
                     TYPE(char*) infoLog)                                                                                        \
     OPENGL_FUNCTION(void, glUseProgram, TYPE(uint32_t) program)                                                                 \
                                                                                                                                 \
+    OPENGL_FUNCTION(int32_t, glGetUniformLocation, TYPE(uint32_t) program, TYPE(const char*) name)                              \
+    OPENGL_FUNCTION(                                                                                                            \
+        void, glUniformMatrix4fv, TYPE(int32_t) location, TYPE(uint32_t) count, TYPE(bool) transpose, TYPE(const float*) value) \
+                                                                                                                                \
     OPENGL_FUNCTION(void, glDrawArrays, TYPE(uint32_t) mode, TYPE(int32_t) first, TYPE(uint32_t) count)                         \
     OPENGL_FUNCTION(                                                                                                            \
         void, glDrawElements, TYPE(uint32_t) mode, TYPE(uint32_t) count, TYPE(uint32_t) type, TYPE(const void*) indices)
