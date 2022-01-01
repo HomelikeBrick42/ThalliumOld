@@ -3,8 +3,9 @@
 #include "Renderer.hpp"
 #include "OpenGLRenderer.hpp"
 #include "OpenGLShader.hpp"
-#include "Vector.hpp"
-#include "Matrix.hpp"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 #include <format>
@@ -58,13 +59,10 @@ int main(int, char**) {
         renderer->glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         renderer->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Matrix4x4f projectionMatrix = Matrix4x4f_Identity();
-        projectionMatrix[3][0]      = 0.5f;
-        projectionMatrix[3][1]      = -0.5f;
-        projectionMatrix[3][2]      = 0.0f;
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), { 0.5f, -0.5f, 0.0f });
 
         shader->Bind();
-        renderer->glUniformMatrix4fv(2, 1, false, &projectionMatrix[0][0]);
+        renderer->glUniformMatrix4fv(0, 1, false, glm::value_ptr(transform));
         renderer->DrawIndexed(vertexBuffer, indexBuffer, shader);
 
         renderer->Present();

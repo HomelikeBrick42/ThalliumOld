@@ -3,6 +3,7 @@ project(Thallium)
 
 set(CMAKE_CXX_STANDARD 20)
 
+add_subdirectory(glm)
 add_executable(
         Thallium
         src/Base.hpp
@@ -19,11 +20,12 @@ add_executable(
         src/Ref.hpp
         src/Renderer.hpp
         src/Shader.hpp
-        src/Vector.hpp
         src/VertexBuffer.hpp
         src/Window.hpp
         src/WindowsOpenGLRenderer.cpp
         src/WindowsOpenGLRenderer.hpp
         src/WindowsWindow.cpp
-        src/WindowsWindow.hpp src/Matrix.hpp)
+        src/WindowsWindow.hpp)
+target_compile_options(Thallium PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED)
+target_include_directories(Thallium PRIVATE glm/)
 target_link_libraries(Thallium OpenGL32)
