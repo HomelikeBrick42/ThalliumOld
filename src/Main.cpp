@@ -2,6 +2,7 @@
 #include "Window.hpp"
 #include "Renderer.hpp"
 #include "OpenGLRenderer.hpp"
+#include "Vector.hpp"
 
 #include <iostream>
 #include <format>
@@ -55,7 +56,6 @@ int main(int, char**) {
         renderer->glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         renderer->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // renderer->Draw(vertexBuffer, shader, 0, 3);
         renderer->DrawIndexed(vertexBuffer, indexBuffer, shader);
 
         renderer->Present();
