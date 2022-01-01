@@ -9,6 +9,8 @@ add_subdirectory(vendor/glm)
 add_library(
         Thallium
         Thallium/Base.hpp
+        Thallium/Clock.cpp
+        Thallium/Clock.hpp
         Thallium/IndexBuffer.hpp
         Thallium/OpenGLIndexBuffer.cpp
         Thallium/OpenGLIndexBuffer.hpp

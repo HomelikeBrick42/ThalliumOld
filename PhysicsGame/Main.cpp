@@ -1,5 +1,6 @@
 #include "Window.hpp"
 #include "Renderer.hpp"
+#include "Clock.hpp"
 
 #include "Transform.hpp"
 
@@ -32,17 +33,14 @@ int main(int, char**) {
     Ref<Shader> shader = renderer->CreateShader("Basic.shader");
 
     struct Vertex {
-        struct {
-            float x;
-            float y;
-            float z;
-        } Position;
+        glm::vec3 Position;
     };
 
     Vertex vertices[] = {
-        { +0.0, +0.5, 0.0 },
-        { +0.5, -0.5, 0.0 },
-        { -0.5, -0.5, 0.0 },
+        { .Position = { -0.5, +0.5, 0.0 } },
+        { .Position = { +0.5, +0.5, 0.0 } },
+        { .Position = { +0.5, -0.5, 0.0 } },
+        { .Position = { -0.5, -0.5, 0.0 } },
     };
 
     VertexBuffer::Element layout[] = {
@@ -52,18 +50,24 @@ int main(int, char**) {
     Ref<VertexBuffer> vertexBuffer = renderer->CreateVertexBuffer(vertices, sizeof(vertices), layout);
 
     uint32_t indices[] = {
-        0,
-        1,
-        2,
+        0, 1, 2, 0, 2, 3,
     };
 
     Ref<IndexBuffer> indexBuffer = renderer->CreateIndexBuffer(indices);
+
+    Clock clock;
+    clock.Start();
+    double lastTime = clock.GetElapsed();
 
     window->Show();
     while (running) {
         window->Update();
 
-        triangleTransform.Rotation = glm::rotate(triangleTransform.Rotation, glm::radians(0.05f), { 0.0, 0.0, -1.0 });
+        double time = clock.GetElapsed();
+        float dt    = (float)(time - lastTime);
+        lastTime    = time;
+
+        triangleTransform.Rotation = glm::rotate(triangleTransform.Rotation, glm::radians(90.0f) * dt, { 0.0, 0.0, -1.0 });
 
         renderer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
         renderer->BeginScene(cameraTransform, projectionMatrix);
