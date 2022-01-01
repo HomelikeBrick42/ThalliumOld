@@ -28,7 +28,7 @@ OpenGLShader::OpenGLShader(Ref<OpenGLRenderer> renderer, const std::string& vert
         defer(delete[] buffer);
         Renderer->glGetShaderInfoLog(Program, maxLength, nullptr, buffer);
 
-        std::cerr << std::format("Shader Linkage Failed: '{s}'", buffer) << std::endl;
+        std::cerr << std::format("Shader Linkage Failed: '{}'", buffer) << std::endl;
         std::exit(1);
     }
 }
@@ -52,7 +52,7 @@ uint32_t OpenGLShader::CreateShader(uint32_t type, const char* source) {
         defer(delete[] buffer);
         Renderer->glGetShaderInfoLog(shader, maxLength, nullptr, buffer);
 
-        std::cerr << std::format("Shader Compilation Failed: '{s}'", buffer) << std::endl;
+        std::cerr << std::format("Shader Compilation Failed: '{}'", buffer) << std::endl;
         std::exit(1);
     }
 

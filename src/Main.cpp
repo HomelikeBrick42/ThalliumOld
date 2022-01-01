@@ -20,14 +20,12 @@ int main(int, char**) {
 
     Ref<Shader> shader = renderer->CreateShader("Basic.shader");
 
-    struct Vector3 {
-        float x;
-        float y;
-        float z;
-    };
-
     struct Vertex {
-        Vector3 Position;
+        struct {
+            float x;
+            float y;
+            float z;
+        } Position;
     };
 
     Vertex vertices[] = {
@@ -42,6 +40,14 @@ int main(int, char**) {
 
     Ref<VertexBuffer> vertexBuffer = renderer->CreateVertexBuffer(vertices, sizeof(vertices), layout);
 
+    uint32_t indices[] = {
+        0,
+        1,
+        2,
+    };
+
+    Ref<IndexBuffer> indexBuffer = renderer->CreateIndexBuffer(indices);
+
     window->Show();
     while (running) {
         window->Update();
@@ -49,7 +55,8 @@ int main(int, char**) {
         renderer->glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         renderer->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        renderer->Draw(vertexBuffer, shader, 0, 3);
+        // renderer->Draw(vertexBuffer, shader, 0, 3);
+        renderer->DrawIndexed(vertexBuffer, indexBuffer, shader);
 
         renderer->Present();
     }

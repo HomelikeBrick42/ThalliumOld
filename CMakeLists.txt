@@ -21,5 +21,5 @@ add_executable(
         src/WindowsOpenGLRenderer.cpp
         src/WindowsOpenGLRenderer.hpp
         src/WindowsWindow.cpp
-        src/WindowsWindow.hpp)
+        src/WindowsWindow.hpp src/IndexBuffer.hpp src/OpenGLIndexBuffer.hpp src/OpenGLIndexBuffer.cpp)
 target_link_libraries(Physics OpenGL32)

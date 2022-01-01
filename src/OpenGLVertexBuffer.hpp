@@ -10,8 +10,8 @@ public:
     OpenGLVertexBuffer(Ref<OpenGLRenderer> renderer, const void* data, size_t size, const std::span<Element>& layout);
     ~OpenGLVertexBuffer() final;
 public:
-    virtual void SetData(const void* data, size_t size) final;
-    virtual void SetLayout(const std::span<Element>& layout) final;
+    void SetData(const void* data, size_t size) final;
+    void SetLayout(const std::span<Element>& layout) final;
     void Bind();
 public:
     Ref<Renderer> GetRenderer() final {

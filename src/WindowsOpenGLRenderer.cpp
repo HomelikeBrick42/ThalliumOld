@@ -33,19 +33,39 @@ WindowsOpenGLRenderer::WindowsOpenGLRenderer(Ref<WindowsWindow> window) : Window
         std::exit(1);
     }
 
-    OpenGLContext = wglCreateContext(Window->DeviceContext);
+    OpenGLLibrary = LoadLibraryA("OpenGL32.dll");
+    if (!OpenGLLibrary) {
+        std::cerr << std::format("Unable load OpenGL32.dll: 0x{:x}", GetLastError()) << std::endl;
+        std::exit(1);
+    }
+
+    HGLRC tempContext = wglCreateContext(Window->DeviceContext);
+    if (!tempContext) {
+        std::cerr << std::format("Unable create temp OpenGL context: 0x{:x}", GetLastError()) << std::endl;
+        std::exit(1);
+    }
+    defer(wglDeleteContext(tempContext));
+
+    if (!wglMakeCurrent(Window->DeviceContext, tempContext)) {
+        std::cerr << std::format("Failed make temp OpenGL context current: 0x{:x}", GetLastError()) << std::endl;
+        std::exit(1);
+    }
+
+    HGLRC(WINAPI * wglCreateContextAttribsARB)
+    (HDC hDC, HGLRC hshareContext, const int* attribList) =
+        reinterpret_cast<HGLRC (*)(HDC, HGLRC, const int*)>(wglGetProcAddress("wglCreateContextAttribsARB"));
+
+    int attribs[] = {
+        0,
+    };
+
+    OpenGLContext = wglCreateContextAttribsARB(Window->DeviceContext, nullptr, attribs);
     if (!OpenGLContext) {
         std::cerr << std::format("Unable create OpenGL context: 0x{:x}", GetLastError()) << std::endl;
         std::exit(1);
     }
 
     MakeContextCurrent();
-
-    OpenGLLibrary = LoadLibraryA("OpenGL32.dll");
-    if (!OpenGLLibrary) {
-        std::cerr << std::format("Unable load OpenGL32.dll: 0x{:x}", GetLastError()) << std::endl;
-        std::exit(1);
-    }
 
     #define OPENGL_FUNCTION(ret, name, ...)                                                           \
         name##Func = reinterpret_cast<name##FunctionType*>(wglGetProcAddress(#name));                 \

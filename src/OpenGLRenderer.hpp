@@ -91,7 +91,9 @@ public:
     virtual ~OpenGLRenderer() = default;
 public:
     void Draw(Ref<VertexBuffer> vertexBuffer, Ref<Shader> shader, size_t first, size_t count) final;
+    void DrawIndexed(Ref<VertexBuffer> vertexBuffer, Ref<IndexBuffer> indexBuffer, Ref<Shader> shader) final;
     Ref<VertexBuffer> CreateVertexBuffer(const void* data, size_t size, const std::span<VertexBuffer::Element>& layout) final;
+    Ref<IndexBuffer> CreateIndexBuffer(const std::span<uint32_t>& indices) final;
 public:
     Ref<Shader> CreateShader(const std::string& filepath) final;
 public:
