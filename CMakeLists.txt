@@ -34,7 +34,8 @@ target_link_libraries(Thallium OpenGL32)
 
 add_executable(
         PhysicsGame
-        PhysicsGame/Main.cpp PhysicsGame/Transform.hpp)
+        PhysicsGame/Main.cpp
+        PhysicsGame/Transform.hpp)
 target_link_libraries(PhysicsGame Thallium glm)
 target_compile_options(PhysicsGame PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED)
 target_include_directories(PhysicsGame PRIVATE Thallium vendor/glm)

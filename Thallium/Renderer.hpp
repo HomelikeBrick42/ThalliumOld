@@ -8,8 +8,6 @@
 #include "VertexBuffer.hpp"
 #include "IndexBuffer.hpp"
 
-class OpenGLRenderer;
-
 class Renderer: public IRef {
 protected:
     Renderer() = default;
@@ -18,8 +16,9 @@ public:
     Renderer(Renderer&&)      = delete;
     virtual ~Renderer()       = default;
 public:
-    virtual void Begin(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) = 0;
-    virtual void End()                                                                 = 0;
+    virtual void Clear(const glm::vec4& color)                                              = 0;
+    virtual void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) = 0;
+    virtual void EndScene()                                                                 = 0;
     virtual void
     Draw(Ref<VertexBuffer> vertexBuffer, Ref<Shader> shader, size_t first, size_t count, const glm::mat4& transform) = 0;
     virtual void
@@ -34,5 +33,5 @@ public:
 public:
     virtual Ref<Window> GetWindow() = 0;
 public:
-    static Ref<OpenGLRenderer> CreateOpenGLRenderer(Ref<Window> window);
+    static Ref<Renderer> CreateOpenGLRenderer(Ref<Window> window);
 };

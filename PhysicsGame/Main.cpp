@@ -1,7 +1,5 @@
-#include "Base.hpp"
 #include "Window.hpp"
 #include "Renderer.hpp"
-#include "OpenGLRenderer.hpp"
 
 #include "Transform.hpp"
 
@@ -9,8 +7,8 @@
 #include <format>
 
 int main(int, char**) {
-    Ref<Window> window           = Window::Create(640, 480, "Physics");
-    Ref<OpenGLRenderer> renderer = Renderer::CreateOpenGLRenderer(window);
+    Ref<Window> window     = Window::Create(640, 480, "Physics");
+    Ref<Renderer> renderer = Renderer::CreateOpenGLRenderer(window);
 
     bool running = true;
     window->SetCloseCallback([&](Ref<Window> window) {
@@ -67,12 +65,10 @@ int main(int, char**) {
 
         triangleTransform.Rotation = glm::rotate(triangleTransform.Rotation, glm::radians(0.05f), { 0.0, 0.0, -1.0 });
 
-        renderer->glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        renderer->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        renderer->Begin(cameraTransform, projectionMatrix);
+        renderer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
+        renderer->BeginScene(cameraTransform, projectionMatrix);
         renderer->DrawIndexed(vertexBuffer, indexBuffer, shader, triangleTransform);
-        renderer->End();
+        renderer->EndScene();
 
         renderer->Present();
     }

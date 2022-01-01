@@ -96,8 +96,9 @@ public:
 public:
     virtual ~OpenGLRenderer() = default;
 public:
-    void Begin(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) final;
-    void End() final;
+    void Clear(const glm::vec4& color) final;
+    void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) final;
+    void EndScene() final;
     void Draw(Ref<VertexBuffer> vertexBuffer, Ref<Shader> shader, size_t first, size_t count, const glm::mat4& transform) final;
     void DrawIndexed(Ref<VertexBuffer> vertexBuffer,
                      Ref<IndexBuffer> indexBuffer,

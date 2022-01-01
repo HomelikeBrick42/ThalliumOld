@@ -81,12 +81,17 @@ Ref<IndexBuffer> OpenGLRenderer::CreateIndexBuffer(const std::span<uint32_t>& in
     return Ref<OpenGLIndexBuffer>::Create(this, indices);
 }
 
-void OpenGLRenderer::Begin(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
+void OpenGLRenderer::Clear(const glm::vec4& color) {
+    glClearColor(color.r, color.g, color.b, color.a);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Do we clear the depth buffer here?
+}
+
+void OpenGLRenderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
     ViewMatrix       = glm::inverse(viewMatrix);
     ProjectionMatrix = projectionMatrix;
 }
 
-void OpenGLRenderer::End() {
+void OpenGLRenderer::EndScene() {
     ViewMatrix       = glm::mat4(1.0f);
     ProjectionMatrix = glm::mat4(1.0f);
 }

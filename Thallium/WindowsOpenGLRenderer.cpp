@@ -6,7 +6,7 @@
 
 #if defined(_WIN32) || defined(_WIN64)
 
-Ref<OpenGLRenderer> Renderer::CreateOpenGLRenderer(Ref<Window> window) {
+Ref<Renderer> Renderer::CreateOpenGLRenderer(Ref<Window> window) {
     return Ref<WindowsOpenGLRenderer>::Create(window.As<WindowsWindow>());
 }
 
