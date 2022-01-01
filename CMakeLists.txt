@@ -12,6 +12,7 @@ add_library(
         Thallium/Clock.cpp
         Thallium/Clock.hpp
         Thallium/IndexBuffer.hpp
+        Thallium/Keycode.hpp
         Thallium/OpenGLIndexBuffer.cpp
         Thallium/OpenGLIndexBuffer.hpp
         Thallium/OpenGLRenderer.cpp

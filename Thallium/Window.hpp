@@ -2,6 +2,7 @@
 
 #include "Base.hpp"
 #include "Ref.hpp"
+#include "Keycode.hpp"
 
 #include <string>
 #include <functional>
@@ -10,8 +11,9 @@ class Window: public IRef {
 protected:
     Window() = default;
 public:
-    using CloseCallbackFunc  = std::function<void(Ref<Window>)>;
-    using ResizeCallbackFunc = std::function<void(Ref<Window>, uint32_t width, uint32_t height)>;
+    using CloseCallbackFunc  = std::function<void(Ref<Window> window)>;
+    using ResizeCallbackFunc = std::function<void(Ref<Window> window, uint32_t width, uint32_t height)>;
+    using KeyCallbackFunc    = std::function<void(Ref<Window> window, KeyCode key, bool pressed)>;
 public:
     Window(const Window&) = delete;
     Window(Window&&)      = delete;
@@ -27,6 +29,7 @@ public:
 public:
     virtual void SetCloseCallback(CloseCallbackFunc callback)   = 0;
     virtual void SetResizeCallback(ResizeCallbackFunc callback) = 0;
+    virtual void SetKeyCallback(KeyCallbackFunc callback)       = 0;
 public:
     static Ref<Window> Create(uint32_t width, uint32_t height, const std::string& title);
 };

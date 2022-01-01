@@ -129,6 +129,61 @@ LRESULT WINAPI WindowsWindow::WindowMessageCallback(HWND hWnd, UINT message, WPA
             }
         } break;
 
+        case WM_KEYDOWN:
+        case WM_KEYUP:
+        case WM_SYSKEYDOWN:
+        case WM_SYSKEYUP: {
+            if (KeyCallback) {
+                bool pressed = message == WM_KEYDOWN || message == WM_SYSKEYDOWN;
+                KeyCode key  = KeyCode_Unknown;
+                switch (wParam) {
+                    case 'W': {
+                        key = KeyCode_W;
+                    } break;
+
+                    case 'S': {
+                        key = KeyCode_S;
+                    } break;
+
+                    case 'A': {
+                        key = KeyCode_A;
+                    } break;
+
+                    case 'D': {
+                        key = KeyCode_D;
+                    } break;
+
+                    case 'Q': {
+                        key = KeyCode_Q;
+                    } break;
+
+                    case 'E': {
+                        key = KeyCode_E;
+                    } break;
+
+                    case VK_SHIFT: {
+                        key = KeyCode_Shift;
+                    } break;
+
+                    case VK_CONTROL: {
+                        key = KeyCode_Control;
+                    } break;
+
+                    case VK_SPACE: {
+                        key = KeyCode_Space;
+                    } break;
+
+                    default: {
+                        key = KeyCode_Unknown;
+                    } break;
+                }
+                for (size_t i = 0; i < (size_t)(lParam & 0xFFFF); i++) {
+                    KeyCallback(this, key, pressed);
+                }
+            }
+            result = DefWindowProcA(hWnd, message, wParam, lParam);
+        } break;
+
         default: {
             result = DefWindowProcA(hWnd, message, wParam, lParam);
         } break;

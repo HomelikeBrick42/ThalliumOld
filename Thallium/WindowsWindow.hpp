@@ -31,6 +31,9 @@ public:
     void SetResizeCallback(ResizeCallbackFunc callback) final {
         ResizeCallback = callback;
     }
+    void SetKeyCallback(KeyCallbackFunc callback) final {
+        KeyCallback = callback;
+    }
 private:
     static LRESULT WINAPI StaticWindowMessageCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     LRESULT WINAPI WindowMessageCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -44,6 +47,7 @@ private:
 private:
     CloseCallbackFunc CloseCallback   = nullptr;
     ResizeCallbackFunc ResizeCallback = nullptr;
+    KeyCallbackFunc KeyCallback       = nullptr;
 };
 
 #endif

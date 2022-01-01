@@ -30,6 +30,12 @@ int main(int, char**) {
             glm::perspective(glm::radians(60.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.001f, 1000.0f);
     });
 
+    // TODO: Should the window keep track of this?
+    bool keys[KeyCode_MaxCount] = {};
+    window->SetKeyCallback([&](Ref<Window> window, KeyCode key, bool pressed) {
+        keys[key] = pressed;
+    });
+
     Ref<Shader> shader = renderer->CreateShader("Basic.shader");
 
     struct Vertex {
@@ -67,7 +73,25 @@ int main(int, char**) {
         float dt    = (float)(time - lastTime);
         lastTime    = time;
 
-        triangleTransform.Rotation = glm::rotate(triangleTransform.Rotation, glm::radians(90.0f) * dt, { 0.0, 0.0, -1.0 });
+        float speed       = keys[KeyCode_Control] ? 5.0f : 2.0f;
+        glm::vec3 forward = cameraTransform.Rotation * glm::vec3{ 0.0f, 0.0f, 1.0f };
+        glm::vec3 right   = cameraTransform.Rotation * glm::vec3{ 1.0f, 0.0f, 0.0f };
+        glm::vec3 up      = cameraTransform.Rotation * glm::vec3{ 0.0f, 1.0f, 0.0f };
+
+        if (keys[KeyCode_W])
+            cameraTransform.Position += forward * speed * dt;
+        if (keys[KeyCode_S])
+            cameraTransform.Position -= forward * speed * dt;
+        if (keys[KeyCode_A])
+            cameraTransform.Position -= right * speed * dt;
+        if (keys[KeyCode_D])
+            cameraTransform.Position += right * speed * dt;
+        if (keys[KeyCode_Q])
+            cameraTransform.Position -= up * speed * dt;
+        if (keys[KeyCode_E])
+            cameraTransform.Position += up * speed * dt;
+
+        // triangleTransform.Rotation = glm::rotate(triangleTransform.Rotation, glm::radians(90.0f) * dt, { 0.0, 0.0, -1.0 });
 
         renderer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
         renderer->BeginScene(cameraTransform, projectionMatrix);
