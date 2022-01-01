@@ -11,9 +11,10 @@ class Window: public IRef {
 protected:
     Window() = default;
 public:
-    using CloseCallbackFunc  = std::function<void(Ref<Window> window)>;
-    using ResizeCallbackFunc = std::function<void(Ref<Window> window, uint32_t width, uint32_t height)>;
-    using KeyCallbackFunc    = std::function<void(Ref<Window> window, KeyCode key, bool pressed)>;
+    using CloseCallbackFunc            = std::function<void(Ref<Window> window)>;
+    using ResizeCallbackFunc           = std::function<void(Ref<Window> window, uint32_t width, uint32_t height)>;
+    using KeyCallbackFunc              = std::function<void(Ref<Window> window, KeyCode key, bool pressed)>;
+    using RawMouseMovementCallbackFunc = std::function<void(Ref<Window> window, int32_t deltaX, int32_t deltaY)>;
 public:
     Window(const Window&) = delete;
     Window(Window&&)      = delete;
@@ -31,9 +32,10 @@ public:
     virtual uint32_t GetWidth()  = 0;
     virtual uint32_t GetHeight() = 0;
 public:
-    virtual void SetCloseCallback(CloseCallbackFunc callback)   = 0;
-    virtual void SetResizeCallback(ResizeCallbackFunc callback) = 0;
-    virtual void SetKeyCallback(KeyCallbackFunc callback)       = 0;
+    virtual void SetCloseCallback(CloseCallbackFunc callback)                       = 0;
+    virtual void SetResizeCallback(ResizeCallbackFunc callback)                     = 0;
+    virtual void SetKeyCallback(KeyCallbackFunc callback)                           = 0;
+    virtual void SetRawMouseMovementCallback(RawMouseMovementCallbackFunc callback) = 0;
 public:
     static Ref<Window> Create(uint32_t width, uint32_t height, const std::string& title);
 };

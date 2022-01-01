@@ -18,7 +18,7 @@ public:
     void Show() final;
     void Hide() final;
 
-    void EnableCursor()  final;
+    void EnableCursor() final;
     void DisableCursor() final;
     bool IsCursorEnabled() final {
         return !CursorDisabled;
@@ -40,6 +40,9 @@ public:
     void SetKeyCallback(KeyCallbackFunc callback) final {
         KeyCallback = callback;
     }
+    void SetRawMouseMovementCallback(RawMouseMovementCallbackFunc callback) final {
+        RawMouseMovementCallback = callback;
+    }
 private:
     static LRESULT WINAPI StaticWindowMessageCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     LRESULT WINAPI WindowMessageCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -52,9 +55,10 @@ private:
     uint32_t Height     = 0;
     bool CursorDisabled = false;
 private:
-    CloseCallbackFunc CloseCallback   = nullptr;
-    ResizeCallbackFunc ResizeCallback = nullptr;
-    KeyCallbackFunc KeyCallback       = nullptr;
+    CloseCallbackFunc CloseCallback                       = nullptr;
+    ResizeCallbackFunc ResizeCallback                     = nullptr;
+    KeyCallbackFunc KeyCallback                           = nullptr;
+    RawMouseMovementCallbackFunc RawMouseMovementCallback = nullptr;
 };
 
 #endif

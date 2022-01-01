@@ -232,7 +232,54 @@ LRESULT WINAPI WindowsWindow::WindowMessageCallback(HWND hWnd, UINT message, WPA
                 }
                 ClipCursor(nullptr);
             }
-        }
+        } break;
+
+        case WM_INPUT: {
+            if (RawMouseMovementCallback) {
+                HRAWINPUT rawInput = reinterpret_cast<HRAWINPUT>(lParam);
+                UINT size          = 0;
+                if (GetRawInputData(rawInput, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER)) == UINT_MAX) {
+                    std::cerr << std::format("Unable to get the size of the mouse input data: {}", GetLastError()) << std::endl;
+                    break;
+                }
+                char* bytes = new char[size];
+                defer(delete[] bytes);
+                if (GetRawInputData(rawInput, RID_INPUT, bytes, &size, sizeof(RAWINPUTHEADER)) == UINT_MAX) {
+                    std::cerr << std::format("Unable to get the mouse input data: {}", GetLastError()) << std::endl;
+                    break;
+                }
+                RAWINPUT* input = reinterpret_cast<RAWINPUT*>(bytes);
+                int32_t mouseX = static_cast<int32_t>(input->data.mouse.lLastX);
+                int32_t mouseY = static_cast<int32_t>(input->data.mouse.lLastY);
+                RawMouseMovementCallback(this, mouseX, mouseY);
+            }
+    #if 0
+
+			if window.mouse_move_callback != nil {
+				raw_input := transmute(Hrawinput)l_param
+				size: u32
+				if get_raw_input_data(raw_input, RID_INPUT, nil, &size, size_of(Raw_Input_Header)) ==
+				   max(u32) {
+					fmt.printf("Failed to get the size of the mouse input data {}\n", get_last_error())
+				}
+				bytes := make([]byte, cast(int)size)
+				defer delete(bytes)
+				if get_raw_input_data(
+					   raw_input,
+					   RID_INPUT,
+					   raw_data(bytes),
+					   &size,
+					   size_of(Raw_Input_Header),
+				   ) == max(u32) {
+					fmt.printf("Failed to get the mouse input data {}\n", get_last_error())
+				}
+				input := cast(^Raw_Input)raw_data(bytes)
+				mouse_x := input.data.mouse.last_x
+				mouse_y := input.data.mouse.last_y
+				window.mouse_move_callback(window, cast(int)mouse_x, cast(int)mouse_y)
+			}
+    #endif
+        } break;
 
         default: {
             result = DefWindowProcA(hWnd, message, wParam, lParam);

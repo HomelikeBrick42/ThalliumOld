@@ -44,6 +44,12 @@ int main(int, char**) {
         }
     });
 
+    glm::ivec2 mouseMovement = {};
+    window->SetRawMouseMovementCallback([&](Ref<Window> window, int32_t deltaX, int32_t deltaY) {
+        mouseMovement.x += deltaX;
+        mouseMovement.y += deltaY;
+    });
+
     Ref<Shader> shader = renderer->CreateShader("Basic.shader");
 
     struct Vertex {
@@ -76,6 +82,7 @@ int main(int, char**) {
     window->Show();
     window->DisableCursor();
     while (running) {
+        mouseMovement = {};
         window->Update();
 
         double time = clock.GetElapsed();
@@ -87,6 +94,18 @@ int main(int, char**) {
         glm::vec3 right   = cameraTransform.Rotation * glm::vec3{ 1.0f, 0.0f, 0.0f };
         glm::vec3 up      = cameraTransform.Rotation * glm::vec3{ 0.0f, 1.0f, 0.0f };
 
+        float cameraSensitivity = 1.0f;
+        glm::vec2 cameraMovement =
+            (glm::vec2)mouseMovement / glm::vec2((float)window->GetWidth(), (float)window->GetHeight()) * cameraSensitivity;
+
+        cameraTransform.Rotation = glm::rotate(glm::identity<glm::quat>(), cameraMovement.x, up) * cameraTransform.Rotation;
+        cameraTransform.Rotation = glm::rotate(glm::identity<glm::quat>(), cameraMovement.y, right) * cameraTransform.Rotation;
+
+        float cameraRotationSpeed = 90.0f;
+        float cameraRotation = ((keys[KeyCode_Q] ? cameraRotationSpeed : 0) + (keys[KeyCode_E] ? -cameraRotationSpeed : 0)) * dt;
+        cameraTransform.Rotation =
+            glm::rotate(glm::identity<glm::quat>(), glm::radians(cameraRotation), forward) * cameraTransform.Rotation;
+
         if (keys[KeyCode_W])
             cameraTransform.Position += forward * speed * dt;
         if (keys[KeyCode_S])
@@ -95,12 +114,10 @@ int main(int, char**) {
             cameraTransform.Position -= right * speed * dt;
         if (keys[KeyCode_D])
             cameraTransform.Position += right * speed * dt;
-        if (keys[KeyCode_Q])
-            cameraTransform.Position -= up * speed * dt;
-        if (keys[KeyCode_E])
+        if (keys[KeyCode_Space])
             cameraTransform.Position += up * speed * dt;
-
-        // triangleTransform.Rotation = glm::rotate(triangleTransform.Rotation, glm::radians(90.0f) * dt, { 0.0, 0.0, -1.0 });
+        if (keys[KeyCode_Shift])
+            cameraTransform.Position -= up * speed * dt;
 
         renderer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
         renderer->BeginScene(cameraTransform, projectionMatrix);
