@@ -120,7 +120,7 @@ int main(int, char**) {
             cameraTransform.Position -= up * speed * dt;
 
         renderer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
-        renderer->BeginScene(cameraTransform, projectionMatrix);
+        renderer->BeginScene(cameraTransform, projectionMatrix, true);
         renderer->DrawIndexed(vertexBuffer, indexBuffer, shader, triangleTransform);
         renderer->EndScene();
 

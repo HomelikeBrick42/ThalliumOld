@@ -5,6 +5,8 @@
 
 #include <glm/mat4x4.hpp>
 
+constexpr uint32_t GL_DEPTH_TEST = 2929;
+
 constexpr uint32_t GL_COLOR_BUFFER_BIT = 16384;
 constexpr uint32_t GL_DEPTH_BUFFER_BIT = 256;
 
@@ -25,6 +27,9 @@ constexpr uint32_t GL_INFO_LOG_LENGTH = 35716;
 constexpr uint32_t GL_TRIANGLES = 4;
 
 #define OPENGL_FUNCTIONS                                                                                                        \
+    OPENGL_FUNCTION(void, glEnable, TYPE(uint32_t) cap)                                                                         \
+    OPENGL_FUNCTION(void, glDisable, TYPE(uint32_t) cap)                                                                        \
+                                                                                                                                \
     OPENGL_FUNCTION(void, glClearColor, TYPE(float) r, TYPE(float) g, TYPE(float) b, TYPE(float) a)                             \
     OPENGL_FUNCTION(void, glClear, TYPE(uint32_t) mask)                                                                         \
                                                                                                                                 \
@@ -97,7 +102,7 @@ public:
     virtual ~OpenGLRenderer() = default;
 public:
     void Clear(const glm::vec4& color) final;
-    void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) final;
+    void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, bool depthTest) final;
     void EndScene() final;
     void Draw(Ref<VertexBuffer> vertexBuffer, Ref<Shader> shader, size_t first, size_t count, const glm::mat4& transform) final;
     void DrawIndexed(Ref<VertexBuffer> vertexBuffer,

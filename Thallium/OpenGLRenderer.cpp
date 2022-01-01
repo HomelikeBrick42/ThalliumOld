@@ -86,15 +86,17 @@ void OpenGLRenderer::Clear(const glm::vec4& color) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Do we clear the depth buffer here?
 }
 
-void OpenGLRenderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
+void OpenGLRenderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, bool depthTest) {
     ViewMatrix       = glm::inverse(viewMatrix);
     ProjectionMatrix = projectionMatrix;
+    if (depthTest) {
+        glEnable(GL_DEPTH_TEST);
+    } else {
+        glDisable(GL_DEPTH_TEST);
+    }
 }
 
-void OpenGLRenderer::EndScene() {
-    ViewMatrix       = glm::mat4(1.0f);
-    ProjectionMatrix = glm::mat4(1.0f);
-}
+void OpenGLRenderer::EndScene() {}
 
 void OpenGLRenderer::Draw(
     Ref<VertexBuffer> vertexBuffer, Ref<Shader> shader, size_t first, size_t count, const glm::mat4& transform) {

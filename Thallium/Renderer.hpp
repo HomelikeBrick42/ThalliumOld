@@ -16,9 +16,9 @@ public:
     Renderer(Renderer&&)      = delete;
     virtual ~Renderer()       = default;
 public:
-    virtual void Clear(const glm::vec4& color)                                              = 0;
-    virtual void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) = 0;
-    virtual void EndScene()                                                                 = 0;
+    virtual void Clear(const glm::vec4& color)                                                              = 0;
+    virtual void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, bool depthTest) = 0;
+    virtual void EndScene()                                                                                 = 0;
     virtual void
     Draw(Ref<VertexBuffer> vertexBuffer, Ref<Shader> shader, size_t first, size_t count, const glm::mat4& transform) = 0;
     virtual void
