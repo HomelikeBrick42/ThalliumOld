@@ -17,6 +17,13 @@ public:
 
     void Show() final;
     void Hide() final;
+
+    uint32_t GetWidth() final {
+        return Width;
+    }
+    uint32_t GetHeight() final {
+        return Height;
+    }
 public:
     void SetCloseCallback(CloseCallbackFunc callback) final {
         CloseCallback = callback;
@@ -31,6 +38,9 @@ private:
     HINSTANCE Instance = nullptr;
     HWND WindowHandle  = nullptr;
     HDC DeviceContext  = nullptr;
+private:
+    uint32_t Width  = 0;
+    uint32_t Height = 0;
 private:
     CloseCallbackFunc CloseCallback   = nullptr;
     ResizeCallbackFunc ResizeCallback = nullptr;

@@ -3,8 +3,7 @@
 #include "Renderer.hpp"
 #include "OpenGLRenderer.hpp"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "Transform.hpp"
 
 #include <iostream>
 #include <format>
@@ -17,8 +16,19 @@ int main(int, char**) {
     window->SetCloseCallback([&](Ref<Window> window) {
         running = false;
     });
+
+    Transform cameraTransform  = {};
+    cameraTransform.Position.z = -2.0f;
+
+    Transform triangleTransform = {};
+
+    glm::mat4 projectionMatrix =
+        glm::perspective(glm::radians(60.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.001f, 1000.0f);
+
     window->SetResizeCallback([&](Ref<Window> window, uint32_t width, uint32_t height) {
         renderer->OnResize(width, height);
+        projectionMatrix =
+            glm::perspective(glm::radians(60.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.001f, 1000.0f);
     });
 
     Ref<Shader> shader = renderer->CreateShader("Basic.shader");
@@ -55,14 +65,13 @@ int main(int, char**) {
     while (running) {
         window->Update();
 
+        triangleTransform.Rotation = glm::rotate(triangleTransform.Rotation, glm::radians(0.05f), { 0.0, 0.0, -1.0 });
+
         renderer->glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         renderer->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        renderer->Begin(glm::mat4(1.0f), glm::mat4(1.0f));
-
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), { 0.5f, -0.5f, 0.0f });
-        renderer->DrawIndexed(vertexBuffer, indexBuffer, shader, transform);
-
+        renderer->Begin(cameraTransform, projectionMatrix);
+        renderer->DrawIndexed(vertexBuffer, indexBuffer, shader, triangleTransform);
         renderer->End();
 
         renderer->Present();

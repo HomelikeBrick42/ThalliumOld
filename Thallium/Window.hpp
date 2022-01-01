@@ -21,6 +21,9 @@ public:
 
     virtual void Show() = 0;
     virtual void Hide() = 0;
+
+    virtual uint32_t GetWidth()  = 0;
+    virtual uint32_t GetHeight() = 0;
 public:
     virtual void SetCloseCallback(CloseCallbackFunc callback)   = 0;
     virtual void SetResizeCallback(ResizeCallbackFunc callback) = 0;

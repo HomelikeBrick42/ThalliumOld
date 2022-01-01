@@ -82,7 +82,7 @@ Ref<IndexBuffer> OpenGLRenderer::CreateIndexBuffer(const std::span<uint32_t>& in
 }
 
 void OpenGLRenderer::Begin(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
-    ViewMatrix       = viewMatrix;
+    ViewMatrix       = glm::inverse(viewMatrix);
     ProjectionMatrix = projectionMatrix;
 }
 

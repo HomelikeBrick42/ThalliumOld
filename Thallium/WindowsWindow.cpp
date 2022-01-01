@@ -34,11 +34,14 @@ WindowsWindow::WindowsWindow(uint32_t width, uint32_t height, const std::string&
     constexpr DWORD WindowStyleEx = 0;
     constexpr DWORD WindowStyle   = WS_OVERLAPPEDWINDOW;
 
+    Width  = width;
+    Height = height;
+
     RECT windowRect;
     windowRect.left   = 100;
-    windowRect.right  = windowRect.left + static_cast<LONG>(width);
+    windowRect.right  = windowRect.left + static_cast<LONG>(Width);
     windowRect.top    = 100;
-    windowRect.bottom = windowRect.top + static_cast<LONG>(height);
+    windowRect.bottom = windowRect.top + static_cast<LONG>(Height);
     AdjustWindowRectEx(&windowRect, WindowStyle, false, WindowStyleEx);
 
     LONG windowWidth  = windowRect.right - windowRect.left;
@@ -119,7 +122,9 @@ LRESULT WINAPI WindowsWindow::WindowMessageCallback(HWND hWnd, UINT message, WPA
                 LONG windowWidth  = windowRect.right - windowRect.left;
                 LONG windowHeight = windowRect.bottom - windowRect.top;
                 if (windowWidth > 0 && windowHeight > 0) {
-                    ResizeCallback(this, static_cast<uint32_t>(windowWidth), static_cast<uint32_t>(windowHeight));
+                    Width  = static_cast<uint32_t>(windowWidth);
+                    Height = static_cast<uint32_t>(windowHeight);
+                    ResizeCallback(this, Width, Height);
                 }
             }
         } break;
