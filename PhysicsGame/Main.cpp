@@ -4,8 +4,55 @@
 
 #include "Transform.hpp"
 
+#include <cmath>
+
 #include <iostream>
 #include <format>
+
+struct Vertex {
+    glm::vec3 Position;
+    glm::vec3 Normal;
+};
+
+struct Mesh {
+    Ref<VertexBuffer> VertexBuffer;
+    Ref<IndexBuffer> IndexBuffer;
+};
+
+static VertexBuffer::Element VertexLayout[] = {
+    { VertexBuffer::ElementType::Float3, offsetof(Vertex, Position), sizeof(Vertex), false },
+    { VertexBuffer::ElementType::Float3, offsetof(Vertex, Normal), sizeof(Vertex), false },
+};
+
+Mesh GenerateIcosphere(Ref<Renderer> renderer, uint32_t subdivisions) {
+    constexpr float X = 0.525731112119133606f;
+    constexpr float Z = 0.850650808352039932f;
+    constexpr float N = 0.0f;
+
+    std::vector<Vertex> vertices = {
+        { .Position = glm::normalize(glm::vec3{ -X, N, Z }), .Normal = glm::normalize(glm::vec3{ -X, N, Z }) },
+        { .Position = glm::normalize(glm::vec3{ X, N, Z }), .Normal = glm::normalize(glm::vec3{ X, N, Z }) },
+        { .Position = glm::normalize(glm::vec3{ -X, N, -Z }), .Normal = glm::normalize(glm::vec3{ -X, N, -Z }) },
+        { .Position = glm::normalize(glm::vec3{ X, N, -Z }), .Normal = glm::normalize(glm::vec3{ X, N, -Z }) },
+        { .Position = glm::normalize(glm::vec3{ N, Z, X }), .Normal = glm::normalize(glm::vec3{ N, Z, X }) },
+        { .Position = glm::normalize(glm::vec3{ N, Z, -X }), .Normal = glm::normalize(glm::vec3{ N, Z, -X }) },
+        { .Position = glm::normalize(glm::vec3{ N, -Z, X }), .Normal = glm::normalize(glm::vec3{ N, -Z, X }) },
+        { .Position = glm::normalize(glm::vec3{ N, -Z, -X }), .Normal = glm::normalize(glm::vec3{ N, -Z, -X }) },
+        { .Position = glm::normalize(glm::vec3{ Z, X, N }), .Normal = glm::normalize(glm::vec3{ Z, X, N }) },
+        { .Position = glm::normalize(glm::vec3{ -Z, X, N }), .Normal = glm::normalize(glm::vec3{ -Z, X, N }) },
+        { .Position = glm::normalize(glm::vec3{ Z, -X, N }), .Normal = glm::normalize(glm::vec3{ Z, -X, N }) },
+        { .Position = glm::normalize(glm::vec3{ -Z, -X, N }), .Normal = glm::normalize(glm::vec3{ -Z, -X, N }) },
+    };
+
+    std::vector<glm::u32vec3> triangles = {
+        { 0, 4, 1 }, { 0, 9, 4 },  { 9, 5, 4 },  { 4, 5, 8 },  { 4, 8, 1 },  { 8, 10, 1 }, { 8, 3, 10 },
+        { 5, 3, 8 }, { 5, 2, 3 },  { 2, 7, 3 },  { 7, 10, 3 }, { 7, 6, 10 }, { 7, 11, 6 }, { 11, 0, 6 },
+        { 0, 1, 6 }, { 6, 1, 10 }, { 9, 0, 11 }, { 9, 11, 2 }, { 9, 2, 5 },  { 7, 2, 11 },
+    };
+
+    return { renderer->CreateVertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex), VertexLayout),
+             renderer->CreateIndexBuffer({ (uint32_t*)triangles.data(), triangles.size() * 3 }) };
+}
 
 int main(int, char**) {
     Ref<Window> window     = Window::Create(640, 480, "Physics");
@@ -52,28 +99,7 @@ int main(int, char**) {
 
     Ref<Shader> shader = renderer->CreateShader("Basic.shader");
 
-    struct Vertex {
-        glm::vec3 Position;
-    };
-
-    Vertex vertices[] = {
-        { .Position = { -0.5, +0.5, 0.0 } },
-        { .Position = { +0.5, +0.5, 0.0 } },
-        { .Position = { +0.5, -0.5, 0.0 } },
-        { .Position = { -0.5, -0.5, 0.0 } },
-    };
-
-    VertexBuffer::Element layout[] = {
-        { VertexBuffer::ElementType::Float3, offsetof(Vertex, Position), sizeof(Vertex), false },
-    };
-
-    Ref<VertexBuffer> vertexBuffer = renderer->CreateVertexBuffer(vertices, sizeof(vertices), layout);
-
-    uint32_t indices[] = {
-        0, 1, 2, 0, 2, 3,
-    };
-
-    Ref<IndexBuffer> indexBuffer = renderer->CreateIndexBuffer(indices);
+    Mesh sphereMesh = GenerateIcosphere(renderer, 1);
 
     Clock clock;
     clock.Start();
@@ -121,7 +147,7 @@ int main(int, char**) {
 
         renderer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
         renderer->BeginScene(cameraTransform, projectionMatrix, true);
-        renderer->DrawIndexed(vertexBuffer, indexBuffer, shader, triangleTransform);
+        renderer->DrawIndexed(sphereMesh.VertexBuffer, sphereMesh.IndexBuffer, shader, triangleTransform);
         renderer->EndScene();
 
         renderer->Present();
