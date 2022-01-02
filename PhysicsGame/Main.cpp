@@ -26,14 +26,20 @@ static VertexBuffer::Element VertexLayout[] = {
     { VertexBuffer::ElementType::Float3, offsetof(Vertex, Normal), sizeof(Vertex), false },
 };
 
-std::vector<Vertex> ObjMeshToVertices(const Obj::Object& object) {
+Mesh ObjToMesh(Ref<Renderer> renderer, const Obj::Object& object) {
     std::vector<Vertex> vertices;
+    std::vector<uint32_t> indices;
+    uint32_t index = 0;
     for (auto& face : object.Faces) {
         vertices.push_back({ .Position = object.Positions[face.Positions[0]], .Normal = object.Normals[face.Normals[0]] });
+        indices.push_back(index++);
         vertices.push_back({ .Position = object.Positions[face.Positions[1]], .Normal = object.Normals[face.Normals[1]] });
+        indices.push_back(index++);
         vertices.push_back({ .Position = object.Positions[face.Positions[2]], .Normal = object.Normals[face.Normals[2]] });
+        indices.push_back(index++);
     }
-    return vertices;
+    return { renderer->CreateVertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex), VertexLayout),
+             renderer->CreateIndexBuffer(indices) };
 }
 
 int main(int, char**) {
@@ -47,8 +53,6 @@ int main(int, char**) {
 
     Transform cameraTransform  = {};
     cameraTransform.Position.z = -2.0f;
-
-    Transform triangleTransform = {};
 
     glm::mat4 projectionMatrix =
         glm::perspective(glm::radians(60.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.001f, 1000.0f);
@@ -81,10 +85,13 @@ int main(int, char**) {
 
     Ref<Shader> shader = renderer->CreateShader("Basic.shader");
 
-    std::vector<Obj::Object> objects = Obj::Load("Cube.obj");
-    std::vector<Vertex> vertices     = ObjMeshToVertices(objects[0]);
-    Ref<VertexBuffer> vertexBuffer =
-        renderer->CreateVertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex), VertexLayout);
+    Mesh cubeMesh            = ObjToMesh(renderer, Obj::Load("Cube.obj")[0]);
+    Transform cubeTransform  = {};
+    cubeTransform.Position.x = -1.5f;
+
+    Mesh sphereMesh            = ObjToMesh(renderer, Obj::Load("Sphere.obj")[0]);
+    Transform sphereTransform  = {};
+    sphereTransform.Position.x = 1.5f;
 
     Clock clock;
     clock.Start();
@@ -132,7 +139,8 @@ int main(int, char**) {
 
         renderer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
         renderer->BeginScene(cameraTransform, projectionMatrix, true);
-        renderer->Draw(vertexBuffer, shader, 0, static_cast<uint32_t>(vertices.size()), triangleTransform);
+        renderer->DrawIndexed(cubeMesh.VertexBuffer, cubeMesh.IndexBuffer, shader, cubeTransform);
+        renderer->DrawIndexed(sphereMesh.VertexBuffer, sphereMesh.IndexBuffer, shader, sphereTransform);
         renderer->EndScene();
 
         renderer->Present();
