@@ -2,6 +2,8 @@
 #include "Renderer.hpp"
 #include "Clock.hpp"
 
+#include "ObjLoader.hpp"
+
 #include "Transform.hpp"
 
 #include <cmath>
@@ -24,34 +26,14 @@ static VertexBuffer::Element VertexLayout[] = {
     { VertexBuffer::ElementType::Float3, offsetof(Vertex, Normal), sizeof(Vertex), false },
 };
 
-Mesh GenerateIcosphere(Ref<Renderer> renderer, uint32_t subdivisions) {
-    constexpr float X = 0.525731112119133606f;
-    constexpr float Z = 0.850650808352039932f;
-    constexpr float N = 0.0f;
-
-    std::vector<Vertex> vertices = {
-        { .Position = glm::normalize(glm::vec3{ -X, N, Z }), .Normal = glm::normalize(glm::vec3{ -X, N, Z }) },
-        { .Position = glm::normalize(glm::vec3{ X, N, Z }), .Normal = glm::normalize(glm::vec3{ X, N, Z }) },
-        { .Position = glm::normalize(glm::vec3{ -X, N, -Z }), .Normal = glm::normalize(glm::vec3{ -X, N, -Z }) },
-        { .Position = glm::normalize(glm::vec3{ X, N, -Z }), .Normal = glm::normalize(glm::vec3{ X, N, -Z }) },
-        { .Position = glm::normalize(glm::vec3{ N, Z, X }), .Normal = glm::normalize(glm::vec3{ N, Z, X }) },
-        { .Position = glm::normalize(glm::vec3{ N, Z, -X }), .Normal = glm::normalize(glm::vec3{ N, Z, -X }) },
-        { .Position = glm::normalize(glm::vec3{ N, -Z, X }), .Normal = glm::normalize(glm::vec3{ N, -Z, X }) },
-        { .Position = glm::normalize(glm::vec3{ N, -Z, -X }), .Normal = glm::normalize(glm::vec3{ N, -Z, -X }) },
-        { .Position = glm::normalize(glm::vec3{ Z, X, N }), .Normal = glm::normalize(glm::vec3{ Z, X, N }) },
-        { .Position = glm::normalize(glm::vec3{ -Z, X, N }), .Normal = glm::normalize(glm::vec3{ -Z, X, N }) },
-        { .Position = glm::normalize(glm::vec3{ Z, -X, N }), .Normal = glm::normalize(glm::vec3{ Z, -X, N }) },
-        { .Position = glm::normalize(glm::vec3{ -Z, -X, N }), .Normal = glm::normalize(glm::vec3{ -Z, -X, N }) },
-    };
-
-    std::vector<glm::u32vec3> triangles = {
-        { 0, 4, 1 }, { 0, 9, 4 },  { 9, 5, 4 },  { 4, 5, 8 },  { 4, 8, 1 },  { 8, 10, 1 }, { 8, 3, 10 },
-        { 5, 3, 8 }, { 5, 2, 3 },  { 2, 7, 3 },  { 7, 10, 3 }, { 7, 6, 10 }, { 7, 11, 6 }, { 11, 0, 6 },
-        { 0, 1, 6 }, { 6, 1, 10 }, { 9, 0, 11 }, { 9, 11, 2 }, { 9, 2, 5 },  { 7, 2, 11 },
-    };
-
-    return { renderer->CreateVertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex), VertexLayout),
-             renderer->CreateIndexBuffer({ (uint32_t*)triangles.data(), triangles.size() * 3 }) };
+std::vector<Vertex> ObjMeshToVertices(const Obj::Object& object) {
+    std::vector<Vertex> vertices;
+    for (auto& face : object.Faces) {
+        vertices.push_back({ .Position = object.Positions[face.Positions[0]], .Normal = object.Normals[face.Normals[0]] });
+        vertices.push_back({ .Position = object.Positions[face.Positions[1]], .Normal = object.Normals[face.Normals[1]] });
+        vertices.push_back({ .Position = object.Positions[face.Positions[2]], .Normal = object.Normals[face.Normals[2]] });
+    }
+    return vertices;
 }
 
 int main(int, char**) {
@@ -99,7 +81,10 @@ int main(int, char**) {
 
     Ref<Shader> shader = renderer->CreateShader("Basic.shader");
 
-    Mesh sphereMesh = GenerateIcosphere(renderer, 1);
+    std::vector<Obj::Object> objects = Obj::Load("Cube.obj");
+    std::vector<Vertex> vertices     = ObjMeshToVertices(objects[0]);
+    Ref<VertexBuffer> vertexBuffer =
+        renderer->CreateVertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex), VertexLayout);
 
     Clock clock;
     clock.Start();
@@ -147,7 +132,7 @@ int main(int, char**) {
 
         renderer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
         renderer->BeginScene(cameraTransform, projectionMatrix, true);
-        renderer->DrawIndexed(sphereMesh.VertexBuffer, sphereMesh.IndexBuffer, shader, triangleTransform);
+        renderer->Draw(vertexBuffer, shader, 0, static_cast<uint32_t>(vertices.size()), triangleTransform);
         renderer->EndScene();
 
         renderer->Present();
