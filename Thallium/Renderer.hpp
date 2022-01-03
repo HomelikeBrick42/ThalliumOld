@@ -19,12 +19,19 @@ public:
     virtual void Clear(const glm::vec4& color)                                                              = 0;
     virtual void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, bool depthTest) = 0;
     virtual void EndScene()                                                                                 = 0;
-    virtual void
-    Draw(Ref<VertexBuffer> vertexBuffer, Ref<Shader> shader, size_t first, size_t count, const glm::mat4& transform) = 0;
-    virtual void
-    DrawIndexed(Ref<VertexBuffer> vertexBuffer, Ref<IndexBuffer> indexBuffer, Ref<Shader> shader, const glm::mat4& transform) = 0;
-    virtual void OnResize(uint32_t width, uint32_t height)                                                                    = 0;
-    virtual void Present()                                                                                                    = 0;
+    virtual void Draw(Ref<VertexBuffer> vertexBuffer,
+                      Ref<Shader> shader,
+                      size_t first,
+                      size_t count,
+                      const glm::mat4& transform,
+                      const glm::vec4& color)                                                               = 0;
+    virtual void DrawIndexed(Ref<VertexBuffer> vertexBuffer,
+                             Ref<IndexBuffer> indexBuffer,
+                             Ref<Shader> shader,
+                             const glm::mat4& transform,
+                             const glm::vec4& color)                                                        = 0;
+    virtual void OnResize(uint32_t width, uint32_t height)                                                  = 0;
+    virtual void Present()                                                                                  = 0;
 public:
     virtual Ref<Shader> CreateShader(const std::string& filepath) = 0;
     virtual Ref<VertexBuffer>

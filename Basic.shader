@@ -6,6 +6,8 @@ uniform mat4 u_ModelMatrix = mat4(1.0);
 uniform mat4 u_ViewMatrix = mat4(1.0);
 uniform mat4 u_ProjectionMatrix = mat4(1.0);
 
+uniform vec4 u_Color = vec4(1.0f);
+
 #shader vertex
 
 layout(location = 0) in vec4 a_Position;
@@ -25,5 +27,5 @@ layout(location = 0) out vec4 o_Color;
 layout(location = 0) in vec3 v_Normal;
 
 void main() {
-    o_Color = (dot(normalize(v_Normal), normalize(vec3(0.3, 0.5, 0.4))) * 0.5 + 0.5) * vec4(1.0, 0.0, 0.0, 1.0);
+    o_Color = (dot(normalize(v_Normal), normalize(vec3(0.3, 0.5, 0.4))) * 0.5 + 0.5) * u_Color;
 }

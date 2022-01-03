@@ -11,7 +11,8 @@ struct Transform {
     glm::vec3 Scale    = { 1.0f, 1.0f, 1.0f };
 
     glm::mat4 ToMatrix() {
-        return glm::translate(glm::mat4(1.0f), Position) * glm::toMat4(Rotation) * glm::scale(glm::mat4(1.0f), Scale);
+        return glm::translate(glm::identity<glm::mat4>(), Position) * glm::toMat4(Rotation) *
+               glm::scale(glm::identity<glm::mat4>(), Scale);
     }
 
     operator glm::mat4() {
