@@ -32,7 +32,7 @@ add_library(
         Thallium/Renderer/VertexBuffer.hpp)
 target_link_libraries(Thallium glm)
 target_compile_options(Thallium PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
-target_include_directories(Thallium PRIVATE ./ Thallium vendor/glm)
+target_include_directories(Thallium PRIVATE ./ vendor/glm)
 target_link_libraries(Thallium OpenGL32)
 
 add_executable(
