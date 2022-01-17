@@ -11,12 +11,12 @@ uniform vec4 u_Color = vec4(1.0f);
 #shader vertex
 
 layout(location = 0) in vec4 a_Position;
-layout(location = 1) in vec3 a_Normal;
+layout(location = 1) in vec2 a_TexCoord;
 
-layout(location = 0) out vec3 v_Normal;
+layout(location = 0) out vec2 v_TexCoord;
 
 void main() {
-    v_Normal = (u_ModelMatrix * vec4(a_Normal, 0.0)).xyz;
+    v_TexCoord = a_TexCoord;
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * a_Position;
 }
 
@@ -24,8 +24,8 @@ void main() {
 
 layout(location = 0) out vec4 o_Color;
 
-layout(location = 0) in vec3 v_Normal;
+layout(location = 0) in vec2 v_TexCoord;
 
 void main() {
-    o_Color = (dot(normalize(v_Normal), normalize(vec3(0.3, 0.5, 0.4))) * 0.5 + 0.5) * u_Color;
+    o_Color = u_Color;
 }
