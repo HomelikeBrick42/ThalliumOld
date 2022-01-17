@@ -8,6 +8,8 @@
 #include <glm/vec4.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
+#include <iostream>
+
 using namespace Thallium;
 
 int main(int, char**) {
@@ -67,6 +69,12 @@ int main(int, char**) {
     };
 
     Ref<OpenGLTexture> texture = renderer->CreateTexture(textureData, 2, 2).As<OpenGLTexture>();
+
+    glm::vec4 pixels[4];
+    texture->GetPixels(pixels);
+    for (auto& pixel : pixels) {
+        std::cout << pixel.r << ", " << pixel.g << ", " << pixel.b << ", " << pixel.a << std::endl;
+    }
 
     texture->Bind(0);
     quadShader->SetIntUniform("u_Texture", 0);

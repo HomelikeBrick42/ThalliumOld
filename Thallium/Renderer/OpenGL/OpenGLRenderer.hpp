@@ -120,6 +120,13 @@ namespace Thallium {
                     TYPE(uint32_t) format,                                                                                      \
                     TYPE(uint32_t) type,                                                                                        \
                     TYPE(const void*) data)                                                                                     \
+    OPENGL_FUNCTION(void,                                                                                                       \
+                    glGetTexImage,                                                                                              \
+                    TYPE(uint32_t) target,                                                                                      \
+                    TYPE(int32_t) level,                                                                                        \
+                    TYPE(uint32_t) format,                                                                                      \
+                    TYPE(uint32_t) type,                                                                                        \
+                    TYPE(void*) img)                                                                                            \
                                                                                                                                 \
     OPENGL_FUNCTION(void, glDrawArrays, TYPE(uint32_t) mode, TYPE(int32_t) first, TYPE(uint32_t) count)                         \
     OPENGL_FUNCTION(                                                                                                            \

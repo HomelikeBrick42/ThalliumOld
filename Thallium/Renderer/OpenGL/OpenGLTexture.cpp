@@ -48,4 +48,15 @@ namespace Thallium {
 
         Renderer->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, pixels);
     }
+
+    void OpenGLTexture::GetPixels(glm::u8vec4* outPixels) {
+        Bind();
+        Renderer->glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_INT, outPixels);
+    }
+
+    void OpenGLTexture::GetPixels(glm::vec4* outPixels) {
+        Bind();
+        Renderer->glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, outPixels);
+    }
+
 }

@@ -20,6 +20,8 @@ namespace Thallium {
     public:
         void SetPixels(const glm::u8vec4* pixels, size_t width, size_t height) final;
         void SetPixels(const glm::vec4* pixels, size_t width, size_t height) final;
+        void GetPixels(glm::u8vec4* outPixels) final;
+        void GetPixels(glm::vec4* outPixels) final;
         size_t GetWidth() final {
             return Width;
         }
