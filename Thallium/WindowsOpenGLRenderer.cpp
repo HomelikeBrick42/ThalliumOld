@@ -6,66 +6,68 @@
 
 #if defined(_WIN32) || defined(_WIN64)
 
-Ref<Renderer> Renderer::CreateOpenGLRenderer(Ref<Window> window) {
-    return Ref<WindowsOpenGLRenderer>::Create(window.As<WindowsWindow>());
-}
+namespace Thallium {
 
-WindowsOpenGLRenderer::WindowsOpenGLRenderer(Ref<WindowsWindow> window) : Window(window) {
-    PIXELFORMATDESCRIPTOR pixelFormatDescriptor = {
-        .nSize        = sizeof(pixelFormatDescriptor),
-        .nVersion     = 1,
-        .dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
-        .iPixelType   = PFD_TYPE_RGBA,
-        .cColorBits   = 32,
-        .cDepthBits   = 24,
-        .cStencilBits = 8,
-        .iLayerType   = PFD_MAIN_PLANE,
-    };
-
-    int format = ChoosePixelFormat(Window->DeviceContext, &pixelFormatDescriptor);
-    if (format == 0) {
-        std::cerr << std::format("Unable to choose pixel format: 0x{:x}", GetLastError()) << std::endl;
-        std::exit(1);
+    Ref<Renderer> Renderer::CreateOpenGLRenderer(Ref<Window> window) {
+        return Ref<WindowsOpenGLRenderer>::Create(window.As<WindowsWindow>());
     }
 
-    if (!SetPixelFormat(Window->DeviceContext, format, &pixelFormatDescriptor)) {
-        std::cerr << std::format("Unable to set pixel format: 0x{:x}", GetLastError()) << std::endl;
-        std::exit(1);
-    }
+    WindowsOpenGLRenderer::WindowsOpenGLRenderer(Ref<WindowsWindow> window) : Window(window) {
+        PIXELFORMATDESCRIPTOR pixelFormatDescriptor = {
+            .nSize        = sizeof(pixelFormatDescriptor),
+            .nVersion     = 1,
+            .dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
+            .iPixelType   = PFD_TYPE_RGBA,
+            .cColorBits   = 32,
+            .cDepthBits   = 24,
+            .cStencilBits = 8,
+            .iLayerType   = PFD_MAIN_PLANE,
+        };
 
-    OpenGLLibrary = LoadLibraryA("OpenGL32.dll");
-    if (!OpenGLLibrary) {
-        std::cerr << std::format("Unable load OpenGL32.dll: 0x{:x}", GetLastError()) << std::endl;
-        std::exit(1);
-    }
+        int format = ChoosePixelFormat(Window->DeviceContext, &pixelFormatDescriptor);
+        if (format == 0) {
+            std::cerr << std::format("Unable to choose pixel format: 0x{:x}", GetLastError()) << std::endl;
+            std::exit(1);
+        }
 
-    HGLRC tempContext = wglCreateContext(Window->DeviceContext);
-    if (!tempContext) {
-        std::cerr << std::format("Unable create temp OpenGL context: 0x{:x}", GetLastError()) << std::endl;
-        std::exit(1);
-    }
-    defer(wglDeleteContext(tempContext));
+        if (!SetPixelFormat(Window->DeviceContext, format, &pixelFormatDescriptor)) {
+            std::cerr << std::format("Unable to set pixel format: 0x{:x}", GetLastError()) << std::endl;
+            std::exit(1);
+        }
 
-    if (!wglMakeCurrent(Window->DeviceContext, tempContext)) {
-        std::cerr << std::format("Failed make temp OpenGL context current: 0x{:x}", GetLastError()) << std::endl;
-        std::exit(1);
-    }
+        OpenGLLibrary = LoadLibraryA("OpenGL32.dll");
+        if (!OpenGLLibrary) {
+            std::cerr << std::format("Unable load OpenGL32.dll: 0x{:x}", GetLastError()) << std::endl;
+            std::exit(1);
+        }
 
-    HGLRC(WINAPI * wglCreateContextAttribsARB)
-    (HDC hDC, HGLRC hshareContext, const int* attribList) =
-        reinterpret_cast<HGLRC (*)(HDC, HGLRC, const int*)>(wglGetProcAddress("wglCreateContextAttribsARB"));
+        HGLRC tempContext = wglCreateContext(Window->DeviceContext);
+        if (!tempContext) {
+            std::cerr << std::format("Unable create temp OpenGL context: 0x{:x}", GetLastError()) << std::endl;
+            std::exit(1);
+        }
+        defer(wglDeleteContext(tempContext));
 
-    int attribs[] = {
-        0,
-    };
+        if (!wglMakeCurrent(Window->DeviceContext, tempContext)) {
+            std::cerr << std::format("Failed make temp OpenGL context current: 0x{:x}", GetLastError()) << std::endl;
+            std::exit(1);
+        }
 
-    OpenGLContext = wglCreateContextAttribsARB(Window->DeviceContext, nullptr, attribs);
-    if (!OpenGLContext) {
-        std::cerr << std::format("Unable create OpenGL context: 0x{:x}", GetLastError()) << std::endl;
-        std::exit(1);
-    }
+        HGLRC(WINAPI * wglCreateContextAttribsARB)
+        (HDC hDC, HGLRC hshareContext, const int* attribList) =
+            reinterpret_cast<HGLRC (*)(HDC, HGLRC, const int*)>(wglGetProcAddress("wglCreateContextAttribsARB"));
 
-    MakeContextCurrent();
+        int attribs[] = {
+            0,
+        };
+
+        OpenGLContext = wglCreateContextAttribsARB(Window->DeviceContext, nullptr, attribs);
+        if (!OpenGLContext) {
+            std::cerr << std::format("Unable create OpenGL context: 0x{:x}", GetLastError()) << std::endl;
+            std::exit(1);
+        }
+
+        MakeContextCurrent();
 
     #define OPENGL_FUNCTION(ret, name, ...)                                                           \
         name##Func = reinterpret_cast<name##FunctionType*>(wglGetProcAddress(#name));                 \
@@ -76,30 +78,32 @@ WindowsOpenGLRenderer::WindowsOpenGLRenderer(Ref<WindowsWindow> window) : Window
                 std::exit(1);                                                                         \
             }                                                                                         \
         }
-    OPENGL_FUNCTIONS
+        OPENGL_FUNCTIONS
     #undef OPENGL_FUNCTION
-}
+    }
 
-WindowsOpenGLRenderer::~WindowsOpenGLRenderer() {
-    wglDeleteContext(OpenGLContext);
-    FreeLibrary(OpenGLLibrary);
-}
+    WindowsOpenGLRenderer::~WindowsOpenGLRenderer() {
+        wglDeleteContext(OpenGLContext);
+        FreeLibrary(OpenGLLibrary);
+    }
 
-void WindowsOpenGLRenderer::OnResize(uint32_t width, uint32_t height) {
-    glViewport(0, 0, width, height);
-}
+    void WindowsOpenGLRenderer::OnResize(uint32_t width, uint32_t height) {
+        glViewport(0, 0, width, height);
+    }
 
-void WindowsOpenGLRenderer::Present() {
-    SwapBuffers(Window->DeviceContext);
-}
+    void WindowsOpenGLRenderer::Present() {
+        SwapBuffers(Window->DeviceContext);
+    }
 
-void WindowsOpenGLRenderer::MakeContextCurrent() {
-    if (wglGetCurrentContext() != OpenGLContext) {
-        if (!wglMakeCurrent(Window->DeviceContext, OpenGLContext)) {
-            std::cerr << std::format("Failed make OpenGL context current: 0x{:x}", GetLastError()) << std::endl;
-            std::exit(1);
+    void WindowsOpenGLRenderer::MakeContextCurrent() {
+        if (wglGetCurrentContext() != OpenGLContext) {
+            if (!wglMakeCurrent(Window->DeviceContext, OpenGLContext)) {
+                std::cerr << std::format("Failed make OpenGL context current: 0x{:x}", GetLastError()) << std::endl;
+                std::exit(1);
+            }
         }
     }
+
 }
 
 #endif

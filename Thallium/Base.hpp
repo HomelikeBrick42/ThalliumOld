@@ -4,11 +4,13 @@
 
 #include <utility>
 
-template<class T, class = void>
-struct IsComplete: std::false_type {};
+namespace Thallium {
 
-template<class T>
-struct IsComplete<T, decltype(void(sizeof(T)))>: std::true_type {};
+    template<class T, class = void>
+    struct IsComplete: std::false_type {};
+
+    template<class T>
+    struct IsComplete<T, decltype(void(sizeof(T)))>: std::true_type {};
 
 #define EVAL(...)                                              __VA_ARGS__
 #define VARCOUNT(...)                                          EVAL(VARCOUNT_I(__VA_ARGS__, 9, 8, 7, 6, 5, 4, 3, 2, 1, ))
@@ -50,3 +52,5 @@ struct IsComplete<T, decltype(void(sizeof(T)))>: std::true_type {};
                                                          \
         return Defer{ lambda };                          \
     }()
+
+}

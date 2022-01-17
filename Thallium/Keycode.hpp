@@ -2,29 +2,33 @@
 
 #include "Base.hpp"
 
-// TODO: Add more keycodes
-enum KeyCode {
-    KeyCode_Unknown,
+namespace Thallium {
 
-    KeyCode_W,
-    KeyCode_S,
-    KeyCode_A,
-    KeyCode_D,
+    // TODO: Add more keycodes
+    enum KeyCode {
+        KeyCode_Unknown,
 
-    KeyCode_Q,
-    KeyCode_E,
+        KeyCode_W,
+        KeyCode_S,
+        KeyCode_A,
+        KeyCode_D,
 
-    KeyCode_Shift,
-    KeyCode_Control,
-    KeyCode_Space,
+        KeyCode_Q,
+        KeyCode_E,
 
-    KeyCode_Escape,
+        KeyCode_Shift,
+        KeyCode_Control,
+        KeyCode_Space,
 
-    KeyCode_MaxCount,
-};
+        KeyCode_Escape,
 
-enum MouseButton {
-    MouseButton_Left,
-    MouseButton_Middle,
-    MouseButton_Right,
-};
+        KeyCode_MaxCount,
+    };
+
+    enum MouseButton {
+        MouseButton_Left,
+        MouseButton_Middle,
+        MouseButton_Right,
+    };
+
+}

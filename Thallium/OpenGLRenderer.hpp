@@ -5,26 +5,28 @@
 
 #include <glm/mat4x4.hpp>
 
-constexpr uint32_t GL_DEPTH_TEST = 2929;
+namespace Thallium {
 
-constexpr uint32_t GL_COLOR_BUFFER_BIT = 16384;
-constexpr uint32_t GL_DEPTH_BUFFER_BIT = 256;
+    constexpr uint32_t GL_DEPTH_TEST = 2929;
 
-constexpr uint32_t GL_FLOAT        = 5126;
-constexpr uint32_t GL_UNSIGNED_INT = 5125;
+    constexpr uint32_t GL_COLOR_BUFFER_BIT = 16384;
+    constexpr uint32_t GL_DEPTH_BUFFER_BIT = 256;
 
-constexpr uint32_t GL_ARRAY_BUFFER         = 34962;
-constexpr uint32_t GL_ELEMENT_ARRAY_BUFFER = 34963;
-constexpr uint32_t GL_STATIC_DRAW          = 35044;
+    constexpr uint32_t GL_FLOAT        = 5126;
+    constexpr uint32_t GL_UNSIGNED_INT = 5125;
 
-constexpr uint32_t GL_VERTEX_SHADER   = 35633;
-constexpr uint32_t GL_FRAGMENT_SHADER = 35632;
+    constexpr uint32_t GL_ARRAY_BUFFER         = 34962;
+    constexpr uint32_t GL_ELEMENT_ARRAY_BUFFER = 34963;
+    constexpr uint32_t GL_STATIC_DRAW          = 35044;
 
-constexpr uint32_t GL_COMPILE_STATUS  = 35713;
-constexpr uint32_t GL_LINK_STATUS     = 35714;
-constexpr uint32_t GL_INFO_LOG_LENGTH = 35716;
+    constexpr uint32_t GL_VERTEX_SHADER   = 35633;
+    constexpr uint32_t GL_FRAGMENT_SHADER = 35632;
 
-constexpr uint32_t GL_TRIANGLES = 4;
+    constexpr uint32_t GL_COMPILE_STATUS  = 35713;
+    constexpr uint32_t GL_LINK_STATUS     = 35714;
+    constexpr uint32_t GL_INFO_LOG_LENGTH = 35716;
+
+    constexpr uint32_t GL_TRIANGLES = 4;
 
 #define OPENGL_FUNCTIONS                                                                                                        \
     OPENGL_FUNCTION(void, glEnable, TYPE(uint32_t) cap)                                                                         \
@@ -91,36 +93,36 @@ constexpr uint32_t GL_TRIANGLES = 4;
 
 #define TYPE(type)                      type
 #define OPENGL_FUNCTION(ret, name, ...) typedef ret _cdecl name##FunctionType(__VA_ARGS__);
-OPENGL_FUNCTIONS
+    OPENGL_FUNCTIONS
 #undef OPENGL_FUNCTION
 #undef TYPE
 
-class OpenGLRenderer: public Renderer {
-protected:
-    OpenGLRenderer() = default;
-public:
-public:
-    virtual ~OpenGLRenderer() = default;
-public:
-    void Clear(const glm::vec4& color) final;
-    void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, bool depthTest) final;
-    void EndScene() final;
-    void Draw(Ref<VertexBuffer> vertexBuffer,
-              Ref<Shader> shader,
-              size_t first,
-              size_t count,
-              const glm::mat4& transform,
-              const glm::vec4& color) final;
-    void DrawIndexed(Ref<VertexBuffer> vertexBuffer,
-                     Ref<IndexBuffer> indexBuffer,
-                     Ref<Shader> shader,
-                     const glm::mat4& transform,
-                     const glm::vec4& color) final;
-    Ref<VertexBuffer> CreateVertexBuffer(const void* data, size_t size, const std::span<VertexBuffer::Element>& layout) final;
-    Ref<IndexBuffer> CreateIndexBuffer(const std::span<uint32_t>& indices) final;
-public:
-    Ref<Shader> CreateShader(const std::string& filepath) final;
-public:
+    class OpenGLRenderer: public Renderer {
+    protected:
+        OpenGLRenderer() = default;
+    public:
+    public:
+        virtual ~OpenGLRenderer() = default;
+    public:
+        void Clear(const glm::vec4& color) final;
+        void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, bool depthTest) final;
+        void EndScene() final;
+        void Draw(Ref<VertexBuffer> vertexBuffer,
+                  Ref<Shader> shader,
+                  size_t first,
+                  size_t count,
+                  const glm::mat4& transform,
+                  const glm::vec4& color) final;
+        void DrawIndexed(Ref<VertexBuffer> vertexBuffer,
+                         Ref<IndexBuffer> indexBuffer,
+                         Ref<Shader> shader,
+                         const glm::mat4& transform,
+                         const glm::vec4& color) final;
+        Ref<VertexBuffer> CreateVertexBuffer(const void* data, size_t size, const std::span<VertexBuffer::Element>& layout) final;
+        Ref<IndexBuffer> CreateIndexBuffer(const std::span<uint32_t>& indices) final;
+    public:
+        Ref<Shader> CreateShader(const std::string& filepath) final;
+    public:
 #define APPEND_TYPE(type) type
 #define APPEND(x)         GLUE(APPEND_, x)
 #define REMOVE_TYPE(type)
@@ -130,22 +132,24 @@ public:
         MakeContextCurrent();                               \
         return name##Func TRANSFORM(REMOVE, (__VA_ARGS__)); \
     }
-    OPENGL_FUNCTIONS
+        OPENGL_FUNCTIONS
 #undef OPENGL_FUNCTION
 #undef REMOVE
 #undef REMOVE_TYPE
 #undef APPEND
 #undef APPEND_TYPE
-protected:
-    virtual void MakeContextCurrent() = 0;
+    protected:
+        virtual void MakeContextCurrent() = 0;
 #define OPENGL_FUNCTION(ret, name, ...) name##FunctionType* name##Func;
-    OPENGL_FUNCTIONS
+        OPENGL_FUNCTIONS
 #undef OPENGL_FUNCTION
-private:
-    glm::mat4 ViewMatrix;
-    glm::mat4 ProjectionMatrix;
-};
+    private:
+        glm::mat4 ViewMatrix;
+        glm::mat4 ProjectionMatrix;
+    };
 
 #if !defined(KEEP_OPENGL_FUNCTIONS)
     #undef OPENGL_FUNCTIONS
 #endif
+
+}

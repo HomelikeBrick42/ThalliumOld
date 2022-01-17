@@ -13,6 +13,8 @@
 #include <format>
 #include <memory>
 
+using namespace Thallium;
+
 struct Vertex {
     glm::vec3 Position;
     glm::vec3 Normal;
