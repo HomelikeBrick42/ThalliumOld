@@ -3,7 +3,9 @@
 #include "Thallium/Core/Base.hpp"
 #include "Thallium/Core/Ref.hpp"
 #include "Thallium/Core/Window.hpp"
+#include "Thallium/Core/Transform.hpp"
 
+#include "Thallium/Renderer/Material.hpp"
 #include "Thallium/Renderer/Shader.hpp"
 #include "Thallium/Renderer/VertexBuffer.hpp"
 #include "Thallium/Renderer/IndexBuffer.hpp"
@@ -18,22 +20,22 @@ namespace Thallium {
         Renderer(Renderer&&)      = delete;
         virtual ~Renderer()       = default;
     public:
-        virtual void Clear(const glm::vec4& color)                                                              = 0;
-        virtual void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, bool depthTest) = 0;
-        virtual void EndScene()                                                                                 = 0;
+        virtual void Clear(const glm::vec4& color)                                                                   = 0;
+        virtual void BeginScene(const Transform& cameraTransform, const glm::mat4& projectionMatrix, bool depthTest) = 0;
+        virtual void EndScene()                                                                                      = 0;
         virtual void Draw(Ref<VertexBuffer> vertexBuffer,
                           Ref<Shader> shader,
                           size_t first,
                           size_t count,
-                          const glm::mat4& transform,
-                          const glm::vec4& color)                                                               = 0;
+                          const Transform& transform,
+                          const Material& material)                                                                  = 0;
         virtual void DrawIndexed(Ref<VertexBuffer> vertexBuffer,
                                  Ref<IndexBuffer> indexBuffer,
                                  Ref<Shader> shader,
-                                 const glm::mat4& transform,
-                                 const glm::vec4& color)                                                        = 0;
-        virtual void OnResize(uint32_t width, uint32_t height)                                                  = 0;
-        virtual void Present()                                                                                  = 0;
+                                 const Transform& transform,
+                                 const Material& material)                                                           = 0;
+        virtual void OnResize(uint32_t width, uint32_t height)                                                       = 0;
+        virtual void Present()                                                                                       = 0;
     public:
         virtual Ref<Shader> CreateShader(const std::string& filepath) = 0;
         virtual Ref<VertexBuffer>

@@ -5,7 +5,7 @@
 
 #include "ObjLoader.hpp"
 
-#include "Transform.hpp"
+#include "Thallium/Core/Transform.hpp"
 
 #include <cmath>
 
@@ -29,19 +29,19 @@ struct Point {
     glm::vec3 Position;
     glm::vec3 PreviousPosition;
     float Radius;
-    glm::vec4 Color;
+    Material Material;
 };
 
 struct Stick {
     Point* A;
     Point* B;
     float Length;
-    glm::vec4 Color;
+    Material Material;
 };
 
 struct Cube {
     Transform Transform;
-    glm::vec4 Color;
+    Material Material;
 };
 
 static VertexBuffer::Element VertexLayout[] = {
@@ -359,13 +359,13 @@ int main(int, char**) {
             // Game
             renderer->BeginScene(cameraTransform, projectionMatrix, true);
             for (auto& cube : cubes) {
-                renderer->DrawIndexed(cubeMesh.VertexBuffer, cubeMesh.IndexBuffer, shader, cube.Transform, cube.Color);
+                renderer->DrawIndexed(cubeMesh.VertexBuffer, cubeMesh.IndexBuffer, shader, cube.Transform, cube.Material);
             }
             for (auto& point : points) {
                 Transform transform;
                 transform.Position  = point->Position;
                 transform.Scale.xyz = point->Radius * 2.0f;
-                renderer->DrawIndexed(sphereMesh.VertexBuffer, sphereMesh.IndexBuffer, shader, transform, point->Color);
+                renderer->DrawIndexed(sphereMesh.VertexBuffer, sphereMesh.IndexBuffer, shader, transform, point->Material);
             }
             for (auto& stick : sticks) {
                 Transform transform;
@@ -374,20 +374,20 @@ int main(int, char**) {
                                                      glm::normalize(glm::vec3{ 1.0f, 1.0f, 1.0f }));
                 transform.Scale.xy = 0.5f;
                 transform.Scale.z  = glm::length(stick.B->Position - stick.A->Position);
-                renderer->DrawIndexed(cylinderMesh.VertexBuffer, cylinderMesh.IndexBuffer, shader, transform, stick.Color);
+                renderer->DrawIndexed(cylinderMesh.VertexBuffer, cylinderMesh.IndexBuffer, shader, transform, stick.Material);
             }
             renderer->EndScene();
 
             // UI
             renderer->BeginScene(
-                glm::identity<glm::mat4>(),
+                {},
                 glm::scale(glm::identity<glm::mat4>(), { 1.0f, (float)window->GetWidth() / (float)window->GetHeight(), 1.0f }),
                 false);
             renderer->DrawIndexed(crosshairMesh.VertexBuffer,
                                   crosshairMesh.IndexBuffer,
                                   shader,
-                                  glm::scale(glm::identity<glm::mat4>(), { 0.005f, 0.005f, 1.0f }),
-                                  { 0.1f, 0.1f, 0.1f, 1.0f });
+                                  { .Scale = { 0.005f, 0.005f, 1.0f } },
+                                  { .Color = { 0.1f, 0.1f, 0.1f, 1.0f } });
             renderer->EndScene();
         }
 

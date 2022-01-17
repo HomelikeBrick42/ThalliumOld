@@ -88,8 +88,8 @@ namespace Thallium {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Do we clear the depth buffer here?
     }
 
-    void OpenGLRenderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, bool depthTest) {
-        ViewMatrix       = glm::inverse(viewMatrix);
+    void OpenGLRenderer::BeginScene(const Transform& cameraTransform, const glm::mat4& projectionMatrix, bool depthTest) {
+        ViewMatrix       = glm::inverse(cameraTransform.ToMatrix());
         ProjectionMatrix = projectionMatrix;
         if (depthTest) {
             glEnable(GL_DEPTH_TEST);
@@ -104,33 +104,35 @@ namespace Thallium {
                               Ref<Shader> shader,
                               size_t first,
                               size_t count,
-                              const glm::mat4& transform,
-                              const glm::vec4& color) {
+                              const Transform& transform,
+                              const Material& material) {
         vertexBuffer.As<OpenGLVertexBuffer>()->Bind();
         Ref<OpenGLShader> openGLShader = shader.As<OpenGLShader>();
         openGLShader->Bind();
-        glUniformMatrix4fv(glGetUniformLocation(openGLShader->Program, "u_ModelMatrix"), 1, false, glm::value_ptr(transform));
+        glUniformMatrix4fv(
+            glGetUniformLocation(openGLShader->Program, "u_ModelMatrix"), 1, false, glm::value_ptr(transform.ToMatrix()));
         glUniformMatrix4fv(glGetUniformLocation(openGLShader->Program, "u_ViewMatrix"), 1, false, glm::value_ptr(ViewMatrix));
         glUniformMatrix4fv(
             glGetUniformLocation(openGLShader->Program, "u_ProjectionMatrix"), 1, false, glm::value_ptr(ProjectionMatrix));
-        glUniform4fv(glGetUniformLocation(openGLShader->Program, "u_Color"), 1, glm::value_ptr(color));
+        glUniform4fv(glGetUniformLocation(openGLShader->Program, "u_Color"), 1, glm::value_ptr(material.Color));
         glDrawArrays(GL_TRIANGLES, static_cast<int32_t>(first), static_cast<uint32_t>(count));
     }
 
     void OpenGLRenderer::DrawIndexed(Ref<VertexBuffer> vertexBuffer,
                                      Ref<IndexBuffer> indexBuffer,
                                      Ref<Shader> shader,
-                                     const glm::mat4& transform,
-                                     const glm::vec4& color) {
+                                     const Transform& transform,
+                                     const Material& material) {
         vertexBuffer.As<OpenGLVertexBuffer>()->Bind();
         indexBuffer.As<OpenGLIndexBuffer>()->Bind();
         Ref<OpenGLShader> openGLShader = shader.As<OpenGLShader>();
         openGLShader->Bind();
-        glUniformMatrix4fv(glGetUniformLocation(openGLShader->Program, "u_ModelMatrix"), 1, false, glm::value_ptr(transform));
+        glUniformMatrix4fv(
+            glGetUniformLocation(openGLShader->Program, "u_ModelMatrix"), 1, false, glm::value_ptr(transform.ToMatrix()));
         glUniformMatrix4fv(glGetUniformLocation(openGLShader->Program, "u_ViewMatrix"), 1, false, glm::value_ptr(ViewMatrix));
         glUniformMatrix4fv(
             glGetUniformLocation(openGLShader->Program, "u_ProjectionMatrix"), 1, false, glm::value_ptr(ProjectionMatrix));
-        glUniform4fv(glGetUniformLocation(openGLShader->Program, "u_Color"), 1, glm::value_ptr(color));
+        glUniform4fv(glGetUniformLocation(openGLShader->Program, "u_Color"), 1, glm::value_ptr(material.Color));
         glDrawElements(GL_TRIANGLES, static_cast<uint32_t>(indexBuffer->GetIndexCount()), GL_UNSIGNED_INT, nullptr);
     }
 

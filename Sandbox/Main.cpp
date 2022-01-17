@@ -52,21 +52,16 @@ int main(int, char**) {
 
     Ref<Shader> quadShader = renderer->CreateShader("Color.shader");
 
+    Material quadMaterial = {
+        .Color = { 1.0f, 1.0f, 1.0f, 1.0f },
+    };
+
     window->Show();
     while (running) {
         window->Update();
         renderer->Clear({ 0.2f, 0.3f, 0.8f, 1.0f });
-        renderer->BeginScene(glm::identity<glm::mat4>(), glm::identity<glm::mat4>(), false);
-        renderer->DrawIndexed(quadVertexBuffer,
-                              quadIndexBuffer,
-                              quadShader,
-                              glm::identity<glm::mat4>(),
-                              {
-                                  1.0f,
-                                  1.0f,
-                                  1.0f,
-                                  1.0f,
-                              });
+        renderer->BeginScene({}, glm::identity<glm::mat4>(), false);
+        renderer->DrawIndexed(quadVertexBuffer, quadIndexBuffer, quadShader, {}, quadMaterial);
         renderer->EndScene();
         renderer->Present();
     }

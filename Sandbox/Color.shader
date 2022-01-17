@@ -7,6 +7,7 @@ uniform mat4 u_ViewMatrix = mat4(1.0);
 uniform mat4 u_ProjectionMatrix = mat4(1.0);
 
 uniform vec4 u_Color = vec4(1.0f);
+uniform sampler2D u_Texture;
 
 #shader vertex
 
@@ -27,5 +28,5 @@ layout(location = 0) out vec4 o_Color;
 layout(location = 0) in vec2 v_TexCoord;
 
 void main() {
-    o_Color = u_Color;
+    o_Color = texture(u_Texture, v_TexCoord) * u_Color;
 }

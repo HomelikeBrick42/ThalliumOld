@@ -105,19 +105,19 @@ namespace Thallium {
         virtual ~OpenGLRenderer() = default;
     public:
         void Clear(const glm::vec4& color) final;
-        void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, bool depthTest) final;
+        void BeginScene(const Transform& cameraTransform, const glm::mat4& projectionMatrix, bool depthTest) final;
         void EndScene() final;
         void Draw(Ref<VertexBuffer> vertexBuffer,
                   Ref<Shader> shader,
                   size_t first,
                   size_t count,
-                  const glm::mat4& transform,
-                  const glm::vec4& color) final;
+                  const Transform& transform,
+                  const Material& material) final;
         void DrawIndexed(Ref<VertexBuffer> vertexBuffer,
                          Ref<IndexBuffer> indexBuffer,
                          Ref<Shader> shader,
-                         const glm::mat4& transform,
-                         const glm::vec4& color) final;
+                         const Transform& transform,
+                         const Material& material) final;
         Ref<VertexBuffer> CreateVertexBuffer(const void* data, size_t size, const std::span<VertexBuffer::Element>& layout) final;
         Ref<IndexBuffer> CreateIndexBuffer(const std::span<uint32_t>& indices) final;
     public:
