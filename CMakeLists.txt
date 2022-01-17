@@ -44,3 +44,10 @@ add_executable(
 target_link_libraries(PhysicsGame Thallium glm)
 target_compile_options(PhysicsGame PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
 target_include_directories(PhysicsGame PRIVATE ./ vendor/glm)
+
+add_executable(
+        Sandbox
+        Sandbox/Main.cpp)
+target_link_libraries(Sandbox Thallium glm)
+target_compile_options(Sandbox PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
+target_include_directories(Sandbox PRIVATE ./ vendor/glm)
