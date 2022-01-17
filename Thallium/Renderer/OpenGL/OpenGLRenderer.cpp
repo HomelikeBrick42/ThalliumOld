@@ -109,12 +109,10 @@ namespace Thallium {
         vertexBuffer.As<OpenGLVertexBuffer>()->Bind();
         Ref<OpenGLShader> openGLShader = shader.As<OpenGLShader>();
         openGLShader->Bind();
-        glUniformMatrix4fv(
-            glGetUniformLocation(openGLShader->Program, "u_ModelMatrix"), 1, false, glm::value_ptr(transform.ToMatrix()));
-        glUniformMatrix4fv(glGetUniformLocation(openGLShader->Program, "u_ViewMatrix"), 1, false, glm::value_ptr(ViewMatrix));
-        glUniformMatrix4fv(
-            glGetUniformLocation(openGLShader->Program, "u_ProjectionMatrix"), 1, false, glm::value_ptr(ProjectionMatrix));
-        glUniform4fv(glGetUniformLocation(openGLShader->Program, "u_Color"), 1, glm::value_ptr(material.Color));
+        openGLShader->SetMat4Uniform("u_ModelMatrix", transform.ToMatrix());
+        openGLShader->SetMat4Uniform("u_ViewMatrix", ViewMatrix);
+        openGLShader->SetMat4Uniform("u_ProjectionMatrix", ProjectionMatrix);
+        openGLShader->SetVec4Uniform("u_Color", material.Color);
         glDrawArrays(GL_TRIANGLES, static_cast<int32_t>(first), static_cast<uint32_t>(count));
     }
 
@@ -127,12 +125,10 @@ namespace Thallium {
         indexBuffer.As<OpenGLIndexBuffer>()->Bind();
         Ref<OpenGLShader> openGLShader = shader.As<OpenGLShader>();
         openGLShader->Bind();
-        glUniformMatrix4fv(
-            glGetUniformLocation(openGLShader->Program, "u_ModelMatrix"), 1, false, glm::value_ptr(transform.ToMatrix()));
-        glUniformMatrix4fv(glGetUniformLocation(openGLShader->Program, "u_ViewMatrix"), 1, false, glm::value_ptr(ViewMatrix));
-        glUniformMatrix4fv(
-            glGetUniformLocation(openGLShader->Program, "u_ProjectionMatrix"), 1, false, glm::value_ptr(ProjectionMatrix));
-        glUniform4fv(glGetUniformLocation(openGLShader->Program, "u_Color"), 1, glm::value_ptr(material.Color));
+        openGLShader->SetMat4Uniform("u_ModelMatrix", transform.ToMatrix());
+        openGLShader->SetMat4Uniform("u_ViewMatrix", ViewMatrix);
+        openGLShader->SetMat4Uniform("u_ProjectionMatrix", ProjectionMatrix);
+        openGLShader->SetVec4Uniform("u_Color", material.Color);
         glDrawElements(GL_TRIANGLES, static_cast<uint32_t>(indexBuffer->GetIndexCount()), GL_UNSIGNED_INT, nullptr);
     }
 

@@ -3,6 +3,9 @@
 #include <iostream>
 #include <format>
 
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 namespace Thallium {
 
     OpenGLShader::OpenGLShader(Ref<OpenGLRenderer> renderer, const std::string& vertexSource, const std::string& fragmentSource)
@@ -63,6 +66,21 @@ namespace Thallium {
 
     void OpenGLShader::Bind() {
         Renderer->glUseProgram(Program);
+    }
+
+    void OpenGLShader::SetMat4Uniform(const std::string& name, const glm::mat4& matrix) {
+        Bind();
+        Renderer->glUniformMatrix4fv(Renderer->glGetUniformLocation(Program, name.c_str()), 1, false, glm::value_ptr(matrix));
+    }
+
+    void OpenGLShader::SetVec4Uniform(const std::string& name, const glm::vec4& value) {
+        Bind();
+        Renderer->glUniform4fv(Renderer->glGetUniformLocation(Program, name.c_str()), 1, glm::value_ptr(value));
+    }
+
+    void OpenGLShader::SetIntUniform(const std::string& name, int32_t value) {
+        Bind();
+        Renderer->glUniform1i(Renderer->glGetUniformLocation(Program, name.c_str()), value);
     }
 
 }

@@ -1,5 +1,7 @@
 #include "Thallium/Core/Base.hpp"
 #include "Thallium/Renderer/Renderer.hpp"
+#include "Thallium/Renderer/OpenGL/OpenGLRenderer.hpp"
+#include "Thallium/Renderer/OpenGL/OpenGLShader.hpp"
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
@@ -8,8 +10,8 @@
 using namespace Thallium;
 
 int main(int, char**) {
-    Ref<Window> window     = Window::Create(640, 480, "Sandbox");
-    Ref<Renderer> renderer = Renderer::CreateOpenGLRenderer(window);
+    Ref<Window> window           = Window::Create(640, 480, "Sandbox");
+    Ref<OpenGLRenderer> renderer = Renderer::CreateOpenGLRenderer(window).As<OpenGLRenderer>();
 
     bool running = true;
     window->SetCloseCallback([&](Ref<Window>) {
@@ -50,11 +52,32 @@ int main(int, char**) {
     uint32_t quadIndices[]           = { 0, 1, 2, 2, 3, 0 };
     Ref<IndexBuffer> quadIndexBuffer = renderer->CreateIndexBuffer(quadIndices);
 
-    Ref<Shader> quadShader = renderer->CreateShader("Color.shader");
+    Ref<OpenGLShader> quadShader = renderer->CreateShader("Color.shader").As<OpenGLShader>();
 
     Material quadMaterial = {
         .Color = { 1.0f, 1.0f, 1.0f, 1.0f },
     };
+
+    glm::u8vec4 textureData[] = {
+        { 0xFF, 0xFF, 0x00, 0xFF },
+    };
+
+    uint32_t texture;
+    renderer->glGenTextures(1, &texture);
+    defer(renderer->glDeleteTextures(1, &texture));
+
+    renderer->glBindTexture(GL_TEXTURE_2D, texture);
+
+    renderer->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    renderer->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    renderer->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    renderer->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    renderer->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
+
+    renderer->glActiveTexture(GL_TEXTURE0);
+    renderer->glBindTexture(GL_TEXTURE_2D, texture);
+    quadShader->SetIntUniform("u_Texture", 0);
 
     window->Show();
     while (running) {
