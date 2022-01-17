@@ -109,6 +109,19 @@ namespace Thallium {
             return *Instance;
         }
 
+        Ref<T>& operator=(const Ref<T>& other) {
+            DecRefCount();
+            Instance = other.Instance;
+            IncRefCount();
+            return *this;
+        }
+
+        Ref<T>& operator=(Ref<T>&& other) {
+            Instance       = other.Instance;
+            other.Instance = nullptr;
+            return *this;
+        }
+
         T* Raw() {
             return Instance;
         }

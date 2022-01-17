@@ -1,8 +1,5 @@
 #include "Thallium/Core/Base.hpp"
 #include "Thallium/Renderer/Renderer.hpp"
-#include "Thallium/Renderer/OpenGL/OpenGLRenderer.hpp"
-#include "Thallium/Renderer/OpenGL/OpenGLShader.hpp"
-#include "Thallium/Renderer/OpenGL/OpenGLTexture.hpp"
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
@@ -13,8 +10,8 @@
 using namespace Thallium;
 
 int main(int, char**) {
-    Ref<Window> window           = Window::Create(640, 480, "Sandbox");
-    Ref<OpenGLRenderer> renderer = Renderer::CreateOpenGLRenderer(window).As<OpenGLRenderer>();
+    Ref<Window> window     = Window::Create(640, 480, "Sandbox");
+    Ref<Renderer> renderer = Renderer::CreateOpenGLRenderer(window);
 
     bool running = true;
     window->SetCloseCallback([&](Ref<Window>) {
@@ -55,7 +52,7 @@ int main(int, char**) {
     uint32_t quadIndices[]           = { 0, 1, 2, 2, 3, 0 };
     Ref<IndexBuffer> quadIndexBuffer = renderer->CreateIndexBuffer(quadIndices);
 
-    Ref<OpenGLShader> quadShader = renderer->CreateShader("Color.shader").As<OpenGLShader>();
+    Ref<Shader> quadShader = renderer->CreateShader("Color.shader");
 
     Material quadMaterial = {
         .Color = { 1.0f, 1.0f, 1.0f, 1.0f },
@@ -67,17 +64,7 @@ int main(int, char**) {
         { 0.0f, 1.0f, 1.0f, 1.0f },
         { 0.0f, 1.0f, 0.0f, 1.0f },
     };
-
-    Ref<OpenGLTexture> texture = renderer->CreateTexture(textureData, 2, 2).As<OpenGLTexture>();
-
-    glm::vec4 pixels[4];
-    texture->GetPixels(pixels);
-    for (auto& pixel : pixels) {
-        std::cout << pixel.r << ", " << pixel.g << ", " << pixel.b << ", " << pixel.a << std::endl;
-    }
-
-    texture->Bind(0);
-    quadShader->SetIntUniform("u_Texture", 0);
+    quadMaterial.Texture = renderer->CreateTexture(textureData, 2, 2);
 
     window->Show();
     while (running) {

@@ -138,6 +138,16 @@ namespace Thallium {
         openGLShader->SetMat4Uniform("u_ViewMatrix", ViewMatrix);
         openGLShader->SetMat4Uniform("u_ProjectionMatrix", ProjectionMatrix);
         openGLShader->SetVec4Uniform("u_Color", material.Color);
+        Ref<Texture> texture = material.Texture;
+        if (!texture) {
+            if (!WhitePixelTexture) {
+                glm::u8vec4 pixels = { 0xFF, 0xFF, 0xFF, 0xFF };
+                WhitePixelTexture = CreateTexture(&pixels, 1, 1);
+            }
+            texture = WhitePixelTexture;
+        }
+        texture.As<OpenGLTexture>()->Bind(0);
+        openGLShader->SetIntUniform("u_Texture", 0);
         glDrawElements(GL_TRIANGLES, static_cast<uint32_t>(indexBuffer->GetIndexCount()), GL_UNSIGNED_INT, nullptr);
     }
 

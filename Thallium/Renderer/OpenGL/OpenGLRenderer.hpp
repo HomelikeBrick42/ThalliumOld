@@ -189,6 +189,7 @@ namespace Thallium {
     private:
         glm::mat4 ViewMatrix;
         glm::mat4 ProjectionMatrix;
+        Ref<Texture> WhitePixelTexture;
     };
 
 #if !defined(KEEP_OPENGL_FUNCTIONS)
