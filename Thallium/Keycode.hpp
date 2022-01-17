@@ -22,3 +22,9 @@ enum KeyCode {
 
     KeyCode_MaxCount,
 };
+
+enum MouseButton {
+    MouseButton_Left,
+    MouseButton_Middle,
+    MouseButton_Right,
+};

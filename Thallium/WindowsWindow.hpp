@@ -40,6 +40,9 @@ public:
     void SetKeyCallback(KeyCallbackFunc callback) final {
         KeyCallback = callback;
     }
+    void SetMouseButtonCallback(MouseButtonCallbackFunc callback) final {
+        MouseButtonCallback = callback;
+    }
     void SetRawMouseMovementCallback(RawMouseMovementCallbackFunc callback) final {
         RawMouseMovementCallback = callback;
     }
@@ -58,6 +61,7 @@ private:
     CloseCallbackFunc CloseCallback                       = nullptr;
     ResizeCallbackFunc ResizeCallback                     = nullptr;
     KeyCallbackFunc KeyCallback                           = nullptr;
+    MouseButtonCallbackFunc MouseButtonCallback           = nullptr;
     RawMouseMovementCallbackFunc RawMouseMovementCallback = nullptr;
 };
 

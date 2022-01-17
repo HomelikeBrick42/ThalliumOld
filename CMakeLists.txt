@@ -32,13 +32,15 @@ add_library(
         Thallium/WindowsWindow.hpp)
 target_link_libraries(Thallium glm)
 target_compile_options(Thallium PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
-target_include_directories(Thallium PRIVATE Thallium vendor/glm)
+target_include_directories(Thallium PRIVATE ./ Thallium vendor/glm)
 target_link_libraries(Thallium OpenGL32)
 
 add_executable(
         PhysicsGame
         PhysicsGame/Main.cpp
-        PhysicsGame/Transform.hpp PhysicsGame/ObjLoader.hpp PhysicsGame/ObjLoader.cpp)
+        PhysicsGame/ObjLoader.cpp
+        PhysicsGame/ObjLoader.hpp
+        PhysicsGame/Transform.hpp)
 target_link_libraries(PhysicsGame Thallium glm)
 target_compile_options(PhysicsGame PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
-target_include_directories(PhysicsGame PRIVATE Thallium vendor/glm)
+target_include_directories(PhysicsGame PRIVATE ./ vendor/glm)

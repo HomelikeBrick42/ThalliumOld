@@ -1,6 +1,7 @@
-#include "Window.hpp"
-#include "Renderer.hpp"
-#include "Clock.hpp"
+#include "Thallium/Base.hpp"
+#include "Thallium/Window.hpp"
+#include "Thallium/Renderer.hpp"
+#include "Thallium/Clock.hpp"
 
 #include "ObjLoader.hpp"
 
@@ -66,11 +67,13 @@ Mesh ObjToMesh(Ref<Renderer> renderer, const Obj::Object& object) {
 
 struct Hit {
     bool Hit;
+    float Distance;
     Point* Point;
     glm::vec3 Position;
 };
 
 Hit RaycastPoint(const std::vector<Point*>& points, const glm::vec3& position, const glm::vec3& direction) {
+    Hit hit = { false, INFINITY };
     for (auto& point : points) {
         // Taken from: https://www.ccs.neu.edu/home/fell/CS4300/Lectures/Ray-TracingFormulas.pdf
         float a = glm::dot(direction, direction);
@@ -81,16 +84,17 @@ Hit RaycastPoint(const std::vector<Point*>& points, const glm::vec3& position, c
         float discriminant = b * b - 4.0f * a * c;
         if (discriminant > 0) {
             float t = (-b * glm::sqrt(discriminant)) / (2.0f * a);
-            if (t > 0) {
-                return {
-                    true,
-                    point,
-                    position + direction * t,
-                };
-            }
+            if (t > 0)
+                if (t < hit.Distance)
+                    hit = Hit{
+                        true,
+                        t,
+                        point,
+                        position + direction * t,
+                    };
         }
     }
-    return {};
+    return hit;
 }
 
 int main(int, char**) {
@@ -135,6 +139,29 @@ int main(int, char**) {
         mouseMovement.y += deltaY;
     });
 
+    std::vector<Point*> points;
+    std::vector<Stick> sticks;
+    std::vector<Cube> cubes;
+
+    Point* selectedPoint = nullptr;
+    float selectedPointDistance;
+    glm::vec3 selectedPointOffset;
+    window->SetMouseButtonCallback([&](Ref<Window> window, MouseButton button, bool pressed) {
+        if (button == MouseButton_Left) {
+            if (pressed) {
+                glm::vec3 cameraForward = cameraTransform.Rotation * glm::vec3{ 0.0f, 0.0f, 1.0f };
+                Hit hit                 = RaycastPoint(points, cameraTransform.Position, cameraForward);
+                if (hit.Hit) {
+                    selectedPoint         = hit.Point;
+                    selectedPointDistance = hit.Distance;
+                    selectedPointOffset   = hit.Point->Position - hit.Position;
+                }
+            } else {
+                selectedPoint = nullptr;
+            }
+        }
+    });
+
     Ref<Shader> shader = renderer->CreateShader("Basic.shader");
 
     Mesh crosshairMesh = [&]() -> Mesh {
@@ -163,38 +190,66 @@ int main(int, char**) {
     Mesh cylinderMesh = ObjToMesh(renderer, Obj::Load("Cylinder.obj")[0]);
     Mesh sphereMesh   = ObjToMesh(renderer, Obj::Load("Sphere.obj")[0]);
 
-    std::vector<Point*> points;
-    std::vector<Stick> sticks;
-    std::vector<Cube> cubes;
-
     cubes.push_back({
         Transform{
             .Position = { -1.5f, 0.0f, 0.0f },
             .Rotation = glm::identity<glm::quat>(),
-            .Scale    = { 50.0f, 1.0f, 50.0f },
+            .Scale    = { 100.0f, 1.0f, 100.0f },
         },
         glm::vec4{ 0.2f, 0.8f, 0.4f, 1.0f },
     });
 
-    Point* a = points.emplace_back(new Point{
-        glm::vec3{ -2.0f, 1.1f, 0.0f },
-        glm::vec3{ -2.0f, 1.0f, 0.0f },
-        0.5f,
-        glm::vec4{ 0.9f, 0.1f, 0.1f, 1.0f },
-    });
-    Point* b = points.emplace_back(new Point{
-        glm::vec3{ 1.95f, 2.2f, 0.0f },
-        glm::vec3{ 2.0f, 2.0f, 0.0f },
-        0.5f,
-        glm::vec4{ 0.9f, 0.1f, 0.1f, 1.0f },
-    });
+    {
+        Point* a = points.emplace_back(new Point{
+            glm::vec3{ -2.0f, 1.0f, 0.0f },
+            glm::vec3{ -2.0f, 1.0f, 0.0f },
+            0.5f,
+            glm::vec4{ 0.9f, 0.1f, 0.1f, 1.0f },
+        });
+        Point* b = points.emplace_back(new Point{
+            glm::vec3{ 2.0f, 1.0f, 0.0f },
+            glm::vec3{ 2.0f, 1.0f, 0.0f },
+            0.5f,
+            glm::vec4{ 0.9f, 0.1f, 0.1f, 1.0f },
+        });
+        Point* c = points.emplace_back(new Point{
+            glm::vec3{ 2.0f, 5.0f, 0.0f },
+            glm::vec3{ 2.0f, 5.0f, 0.0f },
+            0.5f,
+            glm::vec4{ 0.9f, 0.1f, 0.1f, 1.0f },
+        });
+        Point* d = points.emplace_back(new Point{
+            glm::vec3{ -2.0f, 5.0f, 0.0f },
+            glm::vec3{ -1.9f, 5.0f, 0.0f },
+            0.5f,
+            glm::vec4{ 0.9f, 0.1f, 0.1f, 1.0f },
+        });
 
-    sticks.push_back({
-        a,
-        b,
-        glm::length(b->Position - a->Position),
-        glm::vec4{ 0.6f, 0.1f, 0.0f, 1.0f },
-    });
+        sticks.push_back({
+            a,
+            b,
+            glm::length(b->Position - a->Position),
+            glm::vec4{ 0.6f, 0.1f, 0.0f, 1.0f },
+        });
+        sticks.push_back({
+            b,
+            c,
+            glm::length(c->Position - b->Position),
+            glm::vec4{ 0.6f, 0.1f, 0.0f, 1.0f },
+        });
+        sticks.push_back({
+            c,
+            d,
+            glm::length(d->Position - c->Position),
+            glm::vec4{ 0.6f, 0.1f, 0.0f, 1.0f },
+        });
+        sticks.push_back({
+            d,
+            a,
+            glm::length(a->Position - d->Position),
+            glm::vec4{ 0.6f, 0.1f, 0.0f, 1.0f },
+        });
+    }
 
     Clock clock;
     clock.Start();
@@ -249,7 +304,10 @@ int main(int, char**) {
                     cameraTransform.Position -= up * speed * dt;
             }
 
-            glm::vec3 cameraForward = cameraTransform.Rotation * glm::vec3{ 0.0f, 0.0f, 1.0f };
+            if (selectedPoint) {
+                glm::vec3 cameraForward = cameraTransform.Rotation * glm::vec3{ 0.0f, 0.0f, 1.0f };
+                selectedPoint->Position = cameraTransform.Position + cameraForward * selectedPointDistance + selectedPointOffset;
+            }
 
             fixedTime += dt;
             constexpr float FixedInterval = 1.0 / 60.0f;
@@ -260,19 +318,34 @@ int main(int, char**) {
 
                     point->Position += velocity;
                     point->Position.y -= 0.002f;
-
-                    if (point->Position.y < 0.5f + point->Radius) {
-                        point->Position.y          = 0.5f + point->Radius;
-                        point->PreviousPosition.y  = point->Position.y + velocity.y * 0.5f;
-                        point->PreviousPosition.xy = point->Position.xy + velocity.xy * 0.2f;
-                    }
                 }
-                for (auto& stick : sticks) {
-                    float distance   = glm::distance(stick.A->Position, stick.B->Position);
-                    float difference = distance - stick.Length;
-                    glm::vec3 aToB   = glm::normalize(stick.B->Position - stick.A->Position);
-                    stick.A->Position += aToB * difference * 0.5f * 0.1f;
-                    stick.B->Position -= aToB * difference * 0.5f * 0.1f;
+                for (size_t step = 0; step < 10; step++) {
+                    for (auto& point : points) {
+                        if (point->Position.y < 0.5f + point->Radius) {
+                            point->Position.y = 0.5f + point->Radius;
+                            point->PreviousPosition.xz -= (point->PreviousPosition.xz - point->Position.xz) * 0.9f;
+                        }
+                    }
+                    for (size_t i = 0; i < points.size(); i++) {
+                        Point* a = points[i];
+                        for (size_t j = i + 1; j < points.size(); j++) {
+                            Point* b       = points[j];
+                            float distance = glm::distance(a->Position, b->Position);
+                            if (distance < a->Radius + b->Radius) {
+                                float difference = distance - (a->Radius + b->Radius);
+                                glm::vec3 aToB   = glm::normalize(b->Position - a->Position);
+                                a->Position += aToB * difference * 0.5f;
+                                b->Position -= aToB * difference * 0.5f;
+                            }
+                        }
+                    }
+                    for (auto& stick : sticks) {
+                        float distance   = glm::distance(stick.A->Position, stick.B->Position);
+                        float difference = distance - stick.Length;
+                        glm::vec3 aToB   = glm::normalize(stick.B->Position - stick.A->Position);
+                        stick.A->Position += aToB * difference * 0.5f * 1.0f;
+                        stick.B->Position -= aToB * difference * 0.5f * 1.0f;
+                    }
                 }
                 fixedTime -= FixedInterval;
             }
@@ -295,8 +368,8 @@ int main(int, char**) {
             for (auto& stick : sticks) {
                 Transform transform;
                 transform.Position = stick.A->Position;
-                transform.Rotation =
-                    glm::quatLookAt(glm::normalize(stick.B->Position - stick.A->Position), glm::vec3{ 0.0f, 1.0f, 0.0f });
+                transform.Rotation = glm::quatLookAt(glm::normalize(stick.B->Position - stick.A->Position),
+                                                     glm::normalize(glm::vec3{ 1.0f, 1.0f, 1.0f }));
                 transform.Scale.xy = 0.5f;
                 transform.Scale.z  = glm::length(stick.B->Position - stick.A->Position);
                 renderer->DrawIndexed(cylinderMesh.VertexBuffer, cylinderMesh.IndexBuffer, shader, transform, stick.Color);
