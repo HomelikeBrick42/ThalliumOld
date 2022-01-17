@@ -31,7 +31,7 @@ namespace Thallium {
     constexpr uint32_t GL_INFO_LOG_LENGTH = 35716;
 
     constexpr uint32_t GL_TEXTURE_2D = 3553;
-    constexpr uint32_t GL_TEXTURE0 = 33984;
+    constexpr uint32_t GL_TEXTURE0   = 33984;
 
     constexpr uint32_t GL_TEXTURE_MIN_FILTER = 10241;
     constexpr uint32_t GL_TEXTURE_MAG_FILTER = 10240;
@@ -154,6 +154,8 @@ namespace Thallium {
                          const Material& material) final;
         Ref<VertexBuffer> CreateVertexBuffer(const void* data, size_t size, const std::span<VertexBuffer::Element>& layout) final;
         Ref<IndexBuffer> CreateIndexBuffer(const std::span<uint32_t>& indices) final;
+        Ref<Texture> CreateTexture(const std::span<glm::u8vec4>& pixels, size_t width, size_t height) final;
+        Ref<Texture> CreateTexture(const std::span<glm::vec4>& pixels, size_t width, size_t height) final;
     public:
         Ref<Shader> CreateShader(const std::string& filepath) final;
     public:

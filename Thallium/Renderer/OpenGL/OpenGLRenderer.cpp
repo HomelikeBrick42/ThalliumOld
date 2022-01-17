@@ -2,6 +2,7 @@
 #include "Thallium/Renderer/OpenGL/OpenGLShader.hpp"
 #include "Thallium/Renderer/OpenGL/OpenGLVertexBuffer.hpp"
 #include "Thallium/Renderer/OpenGL/OpenGLIndexBuffer.hpp"
+#include "Thallium/Renderer/OpenGL/OpenGLTexture.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -81,6 +82,14 @@ namespace Thallium {
 
     Ref<IndexBuffer> OpenGLRenderer::CreateIndexBuffer(const std::span<uint32_t>& indices) {
         return Ref<OpenGLIndexBuffer>::Create(this, indices);
+    }
+
+    Ref<Texture> OpenGLRenderer::CreateTexture(const std::span<glm::u8vec4>& pixels, size_t width, size_t height) {
+        return Ref<OpenGLTexture>::Create(this, pixels, width, height);
+    }
+
+    Ref<Texture> OpenGLRenderer::CreateTexture(const std::span<glm::vec4>& pixels, size_t width, size_t height) {
+        return Ref<OpenGLTexture>::Create(this, pixels, width, height);
     }
 
     void OpenGLRenderer::Clear(const glm::vec4& color) {
