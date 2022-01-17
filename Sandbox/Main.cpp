@@ -18,8 +18,12 @@ int main(int, char**) {
         running = false;
     });
 
+    Ref<Framebuffer> framebuffer =
+        renderer->CreateFramebuffer(renderer->CreateTexture(window->GetWidth(), window->GetHeight()), true);
+
     window->SetResizeCallback([&](Ref<Window>, uint32_t width, uint32_t height) {
         renderer->OnResize(width, height);
+        framebuffer->GetColorAttachment()->AllocatePixels(width, height);
     });
 
     struct QuadVertex {
@@ -70,9 +74,21 @@ int main(int, char**) {
     while (running) {
         window->Update();
         renderer->Clear({ 0.2f, 0.3f, 0.8f, 1.0f });
-        renderer->BeginScene({}, glm::identity<glm::mat4>(), false);
+
+        // Render a scene where there is a textured quad covering the screen to the framebuffer
+        renderer->BeginScene({}, glm::identity<glm::mat4>(), false, framebuffer);
         renderer->DrawIndexed(quadVertexBuffer, quadIndexBuffer, quadShader, {}, quadMaterial);
         renderer->EndScene();
+
+        // Render the framebuffer onto the actual screen at half size
+        renderer->BeginScene({}, glm::identity<glm::mat4>(), false);
+        renderer->DrawIndexed(quadVertexBuffer,
+                              quadIndexBuffer,
+                              quadShader,
+                              { .Scale = { 0.5f, 0.5f, 0.5f } },
+                              { .Texture = framebuffer->GetColorAttachment() });
+        renderer->EndScene();
+
         renderer->Present();
     }
     window->Hide();

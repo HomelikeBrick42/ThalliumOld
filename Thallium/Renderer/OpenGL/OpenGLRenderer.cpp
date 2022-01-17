@@ -3,6 +3,7 @@
 #include "Thallium/Renderer/OpenGL/OpenGLVertexBuffer.hpp"
 #include "Thallium/Renderer/OpenGL/OpenGLIndexBuffer.hpp"
 #include "Thallium/Renderer/OpenGL/OpenGLTexture.hpp"
+#include "Thallium/Renderer/OpenGL/OpenGLFramebuffer.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -92,14 +93,31 @@ namespace Thallium {
         return Ref<OpenGLTexture>::Create(this, pixels, width, height);
     }
 
+    Ref<Texture> OpenGLRenderer::CreateTexture(size_t width, size_t height) {
+        return Ref<OpenGLTexture>::Create(this, width, height);
+    }
+
+    Ref<Framebuffer> OpenGLRenderer::CreateFramebuffer(Ref<Texture> colorAttachment, bool hasDepthStencilAttachment) {
+        return Ref<OpenGLFramebuffer>::Create(this, colorAttachment.As<OpenGLTexture>(), hasDepthStencilAttachment);
+    }
+
     void OpenGLRenderer::Clear(const glm::vec4& color) {
         glClearColor(color.r, color.g, color.b, color.a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Do we clear the depth buffer here?
     }
 
-    void OpenGLRenderer::BeginScene(const Transform& cameraTransform, const glm::mat4& projectionMatrix, bool depthTest) {
-        ViewMatrix       = glm::inverse(cameraTransform.ToMatrix());
-        ProjectionMatrix = projectionMatrix;
+    void OpenGLRenderer::BeginScene(const Transform& cameraTransform,
+                                    const glm::mat4& projectionMatrix,
+                                    bool depthTest,
+                                    Ref<Framebuffer> framebuffer) {
+        ViewMatrix         = glm::inverse(cameraTransform.ToMatrix());
+        ProjectionMatrix   = projectionMatrix;
+        CurrentFramebuffer = framebuffer;
+        if (CurrentFramebuffer) {
+            CurrentFramebuffer.As<OpenGLFramebuffer>()->Bind();
+        } else {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
         if (depthTest) {
             glEnable(GL_DEPTH_TEST);
         } else {
@@ -107,7 +125,12 @@ namespace Thallium {
         }
     }
 
-    void OpenGLRenderer::EndScene() {}
+    void OpenGLRenderer::EndScene() {
+        if (CurrentFramebuffer) {
+            CurrentFramebuffer.As<OpenGLFramebuffer>()->Unbind();
+            CurrentFramebuffer = nullptr;
+        }
+    }
 
     void OpenGLRenderer::Draw(Ref<VertexBuffer> vertexBuffer,
                               Ref<Shader> shader,
@@ -142,7 +165,7 @@ namespace Thallium {
         if (!texture) {
             if (!WhitePixelTexture) {
                 glm::u8vec4 pixels = { 0xFF, 0xFF, 0xFF, 0xFF };
-                WhitePixelTexture = CreateTexture(&pixels, 1, 1);
+                WhitePixelTexture  = CreateTexture(&pixels, 1, 1);
             }
             texture = WhitePixelTexture;
         }

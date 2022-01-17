@@ -42,6 +42,12 @@ namespace Thallium {
     constexpr uint32_t GL_TEXTURE_WRAP_T = 10243;
     constexpr uint32_t GL_CLAMP_TO_EDGE  = 33071;
 
+    constexpr uint32_t GL_FRAMEBUFFER = 36160;
+
+    constexpr uint32_t GL_COLOR_ATTACHMENT0 = 36064;
+
+    constexpr uint32_t GL_FRAMEBUFFER_COMPLETE = 36053;
+
     constexpr uint32_t GL_TRIANGLES = 4;
 
 #define OPENGL_FUNCTIONS                                                                                                        \
@@ -128,6 +134,18 @@ namespace Thallium {
                     TYPE(uint32_t) type,                                                                                        \
                     TYPE(void*) img)                                                                                            \
                                                                                                                                 \
+    OPENGL_FUNCTION(void, glGenFramebuffers, TYPE(uint32_t) n, TYPE(uint32_t*) ids)                                             \
+    OPENGL_FUNCTION(void, glDeleteFramebuffers, TYPE(uint32_t) n, TYPE(uint32_t*) ids)                                          \
+    OPENGL_FUNCTION(void, glBindFramebuffer, TYPE(uint32_t) target, TYPE(uint32_t) framebuffer)                                 \
+    OPENGL_FUNCTION(uint32_t, glCheckFramebufferStatus, TYPE(uint32_t) target)                                                  \
+    OPENGL_FUNCTION(uint32_t,                                                                                                   \
+                    glFramebufferTexture2D,                                                                                     \
+                    TYPE(uint32_t) target,                                                                                      \
+                    TYPE(uint32_t) attachment,                                                                                  \
+                    TYPE(uint32_t) textarget,                                                                                   \
+                    TYPE(uint32_t) texture,                                                                                     \
+                    TYPE(int32_t) level)                                                                                        \
+                                                                                                                                \
     OPENGL_FUNCTION(void, glDrawArrays, TYPE(uint32_t) mode, TYPE(int32_t) first, TYPE(uint32_t) count)                         \
     OPENGL_FUNCTION(                                                                                                            \
         void, glDrawElements, TYPE(uint32_t) mode, TYPE(uint32_t) count, TYPE(uint32_t) type, TYPE(const void*) indices)
@@ -146,7 +164,10 @@ namespace Thallium {
         virtual ~OpenGLRenderer() = default;
     public:
         void Clear(const glm::vec4& color) final;
-        void BeginScene(const Transform& cameraTransform, const glm::mat4& projectionMatrix, bool depthTest) final;
+        void BeginScene(const Transform& cameraTransform,
+                        const glm::mat4& projectionMatrix,
+                        bool depthTest,
+                        Ref<Framebuffer> framebuffer = nullptr) final;
         void EndScene() final;
         void Draw(Ref<VertexBuffer> vertexBuffer,
                   Ref<Shader> shader,
@@ -163,6 +184,8 @@ namespace Thallium {
         Ref<IndexBuffer> CreateIndexBuffer(const std::span<uint32_t>& indices) final;
         Ref<Texture> CreateTexture(const glm::u8vec4* pixels, size_t width, size_t height) final;
         Ref<Texture> CreateTexture(const glm::vec4* pixels, size_t width, size_t height) final;
+        Ref<Texture> CreateTexture(size_t width, size_t height) final;
+        Ref<Framebuffer> CreateFramebuffer(Ref<Texture> colorAttachment, bool hasDepthStencilAttachment) final;
     public:
         Ref<Shader> CreateShader(const std::string& filepath) final;
     public:
@@ -187,9 +210,10 @@ namespace Thallium {
         OPENGL_FUNCTIONS
 #undef OPENGL_FUNCTION
     private:
+        Ref<Texture> WhitePixelTexture;
         glm::mat4 ViewMatrix;
         glm::mat4 ProjectionMatrix;
-        Ref<Texture> WhitePixelTexture;
+        Ref<Framebuffer> CurrentFramebuffer;
     };
 
 #if !defined(KEEP_OPENGL_FUNCTIONS)
