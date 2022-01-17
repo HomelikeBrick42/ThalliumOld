@@ -1,4 +1,4 @@
-#include "Clock.hpp"
+#include "Thallium/Core/Clock.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 

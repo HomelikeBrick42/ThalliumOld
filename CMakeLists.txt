@@ -8,28 +8,28 @@ add_subdirectory(vendor/glm)
 
 add_library(
         Thallium
-        Thallium/Base.hpp
-        Thallium/Clock.cpp
-        Thallium/Clock.hpp
-        Thallium/IndexBuffer.hpp
-        Thallium/Keycode.hpp
-        Thallium/OpenGLIndexBuffer.cpp
-        Thallium/OpenGLIndexBuffer.hpp
-        Thallium/OpenGLRenderer.cpp
-        Thallium/OpenGLRenderer.hpp
-        Thallium/OpenGLShader.cpp
-        Thallium/OpenGLShader.hpp
-        Thallium/OpenGLVertexBuffer.cpp
-        Thallium/OpenGLVertexBuffer.hpp
-        Thallium/Ref.hpp
-        Thallium/Renderer.hpp
-        Thallium/Shader.hpp
-        Thallium/VertexBuffer.hpp
-        Thallium/Window.hpp
-        Thallium/WindowsOpenGLRenderer.cpp
-        Thallium/WindowsOpenGLRenderer.hpp
-        Thallium/WindowsWindow.cpp
-        Thallium/WindowsWindow.hpp)
+        Thallium/Core/Base.hpp
+        Thallium/Core/Clock.cpp
+        Thallium/Core/Clock.hpp
+        Thallium/Core/Keycode.hpp
+        Thallium/Core/Ref.hpp
+        Thallium/Core/Window.hpp
+        Thallium/Core/Windows/WindowsWindow.cpp
+        Thallium/Core/Windows/WindowsWindow.hpp
+        Thallium/Renderer/OpenGL/OpenGLIndexBuffer.cpp
+        Thallium/Renderer/OpenGL/OpenGLIndexBuffer.hpp
+        Thallium/Renderer/OpenGL/OpenGLRenderer.cpp
+        Thallium/Renderer/OpenGL/OpenGLRenderer.hpp
+        Thallium/Renderer/OpenGL/OpenGLShader.cpp
+        Thallium/Renderer/OpenGL/OpenGLShader.hpp
+        Thallium/Renderer/OpenGL/OpenGLVertexBuffer.cpp
+        Thallium/Renderer/OpenGL/OpenGLVertexBuffer.hpp
+        Thallium/Renderer/OpenGL/Windows/WindowsOpenGLRenderer.cpp
+        Thallium/Renderer/OpenGL/Windows/WindowsOpenGLRenderer.hpp
+        Thallium/Renderer/IndexBuffer.hpp
+        Thallium/Renderer/Renderer.hpp
+        Thallium/Renderer/Shader.hpp
+        Thallium/Renderer/VertexBuffer.hpp)
 target_link_libraries(Thallium glm)
 target_compile_options(Thallium PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
 target_include_directories(Thallium PRIVATE ./ Thallium vendor/glm)

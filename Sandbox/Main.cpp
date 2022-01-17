@@ -1,5 +1,5 @@
-#include "Thallium/Base.hpp"
-#include "Thallium/Renderer.hpp"
+#include "Thallium/Core/Base.hpp"
+#include "Thallium/Renderer/Renderer.hpp"
 
 #include <glm/vec4.hpp>
 

@@ -1,5 +1,5 @@
 #define KEEP_OPENGL_FUNCTIONS
-#include "WindowsOpenGLRenderer.hpp"
+#include "Thallium/Renderer/OpenGL/Windows/WindowsOpenGLRenderer.hpp"
 
 #include <iostream>
 #include <format>

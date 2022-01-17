@@ -1,7 +1,7 @@
-#include "OpenGLRenderer.hpp"
-#include "OpenGLShader.hpp"
-#include "OpenGLVertexBuffer.hpp"
-#include "OpenGLIndexBuffer.hpp"
+#include "Thallium/Renderer/OpenGL/OpenGLRenderer.hpp"
+#include "Thallium/Renderer/OpenGL/OpenGLShader.hpp"
+#include "Thallium/Renderer/OpenGL/OpenGLVertexBuffer.hpp"
+#include "Thallium/Renderer/OpenGL/OpenGLIndexBuffer.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 

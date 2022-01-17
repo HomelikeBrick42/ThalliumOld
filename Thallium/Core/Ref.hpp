@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base.hpp"
+#include "Thallium/Core/Base.hpp"
 
 namespace Thallium {
 
@@ -89,7 +89,7 @@ namespace Thallium {
         }
 
         template<typename U>
-        bool operator ==(const Ref<U>& other) const {
+        bool operator==(const Ref<U>& other) const {
             return other.Instance == Instance;
         }
 

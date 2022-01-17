@@ -1,4 +1,4 @@
-#include "OpenGLVertexBuffer.hpp"
+#include "Thallium/Renderer/OpenGL/OpenGLVertexBuffer.hpp"
 
 #include <iostream>
 #include <format>

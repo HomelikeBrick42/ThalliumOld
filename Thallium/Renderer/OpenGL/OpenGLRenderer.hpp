@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Base.hpp"
-#include "Renderer.hpp"
+#include "Thallium/Core/Base.hpp"
+#include "Thallium/Renderer/Renderer.hpp"
 
 #include <glm/mat4x4.hpp>
 

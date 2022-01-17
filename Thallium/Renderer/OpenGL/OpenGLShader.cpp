@@ -1,4 +1,4 @@
-#include "OpenGLShader.hpp"
+#include "Thallium/Renderer/OpenGL/OpenGLShader.hpp"
 
 #include <iostream>
 #include <format>

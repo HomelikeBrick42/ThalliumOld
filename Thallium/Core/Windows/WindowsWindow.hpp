@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Base.hpp"
-#include "Window.hpp"
+#include "Thallium/Core/Base.hpp"
+#include "Thallium/Core/Window.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 

@@ -1,5 +1,4 @@
-#include "OpenGLIndexBuffer.hpp"
-
+#include "Thallium/Renderer/OpenGL/OpenGLIndexBuffer.hpp"
 
 namespace Thallium {
 

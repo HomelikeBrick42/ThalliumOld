@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Base.hpp"
-#include "Ref.hpp"
+#include "Thallium/Core/Base.hpp"
+#include "Thallium/Core/Ref.hpp"
 
 namespace Thallium {
 

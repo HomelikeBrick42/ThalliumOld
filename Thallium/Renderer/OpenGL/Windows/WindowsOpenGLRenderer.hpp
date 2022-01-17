@@ -1,7 +1,7 @@
 #pragma once
 
-#include "OpenGLRenderer.hpp"
-#include "WindowsWindow.hpp"
+#include "Thallium/Renderer/OpenGL/OpenGLRenderer.hpp"
+#include "Thallium/Core/Windows/WindowsWindow.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 

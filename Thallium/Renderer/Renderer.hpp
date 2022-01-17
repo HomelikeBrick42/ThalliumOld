@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Base.hpp"
-#include "Ref.hpp"
-#include "Window.hpp"
+#include "Thallium/Core/Base.hpp"
+#include "Thallium/Core/Ref.hpp"
+#include "Thallium/Core/Window.hpp"
 
-#include "Shader.hpp"
-#include "VertexBuffer.hpp"
-#include "IndexBuffer.hpp"
+#include "Thallium/Renderer/Shader.hpp"
+#include "Thallium/Renderer/VertexBuffer.hpp"
+#include "Thallium/Renderer/IndexBuffer.hpp"
 
 namespace Thallium {
 

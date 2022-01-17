@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Base.hpp"
-#include "Ref.hpp"
-#include "Keycode.hpp"
+#include "Thallium/Core/Base.hpp"
+#include "Thallium/Core/Ref.hpp"
+#include "Thallium/Core/Keycode.hpp"
 
 #include <string>
 #include <functional>

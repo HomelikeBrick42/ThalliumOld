@@ -1,7 +1,7 @@
-#include "Thallium/Base.hpp"
-#include "Thallium/Window.hpp"
-#include "Thallium/Renderer.hpp"
-#include "Thallium/Clock.hpp"
+#include "Thallium/Core/Base.hpp"
+#include "Thallium/Core/Window.hpp"
+#include "Thallium/Renderer/Renderer.hpp"
+#include "Thallium/Core/Clock.hpp"
 
 #include "ObjLoader.hpp"
 

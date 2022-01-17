@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Base.hpp"
-#include "IndexBuffer.hpp"
-#include "OpenGLRenderer.hpp"
+#include "Thallium/Core/Base.hpp"
+#include "Thallium/Renderer/IndexBuffer.hpp"
+#include "Thallium/Renderer/OpenGL/OpenGLRenderer.hpp"
 
 namespace Thallium {
 
