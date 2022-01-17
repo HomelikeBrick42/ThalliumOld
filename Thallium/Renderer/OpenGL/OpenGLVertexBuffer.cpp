@@ -9,7 +9,7 @@ namespace Thallium {
                                            const void* data,
                                            size_t size,
                                            const std::span<Element>& layout)
-        : Renderer(renderer), VertexArray(0), VertexBuffer(0) {
+        : Renderer(renderer), VertexArray(UINT32_MAX), VertexBuffer(UINT32_MAX) {
         Renderer->glGenVertexArrays(1, &VertexArray);
         Renderer->glGenBuffers(1, &VertexBuffer);
         SetData(data, size);

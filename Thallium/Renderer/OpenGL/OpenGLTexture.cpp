@@ -3,19 +3,19 @@
 namespace Thallium {
 
     OpenGLTexture::OpenGLTexture(Ref<OpenGLRenderer> renderer, const glm::u8vec4* pixels, size_t width, size_t height)
-        : Renderer(renderer), Texture(0), Width(width), Height(height) {
+        : Renderer(renderer), Texture(UINT32_MAX), Width(width), Height(height) {
         Renderer->glGenTextures(1, &Texture);
         SetPixels(pixels, width, height);
     }
 
     OpenGLTexture::OpenGLTexture(Ref<OpenGLRenderer> renderer, const glm::vec4* pixels, size_t width, size_t height)
-        : Renderer(renderer), Texture(0), Width(width), Height(height) {
+        : Renderer(renderer), Texture(UINT32_MAX), Width(width), Height(height) {
         Renderer->glGenTextures(1, &Texture);
         SetPixels(pixels, width, height);
     }
 
     OpenGLTexture::OpenGLTexture(Ref<OpenGLRenderer> renderer, size_t width, size_t height)
-        : Renderer(renderer), Texture(0), Width(width), Height(height) {
+        : Renderer(renderer), Texture(UINT32_MAX), Width(width), Height(height) {
         Renderer->glGenTextures(1, &Texture);
         AllocatePixels(width, height);
     }
@@ -36,6 +36,9 @@ namespace Thallium {
     void OpenGLTexture::SetPixels(const glm::u8vec4* pixels, size_t width, size_t height) {
         Bind();
 
+        Width  = width;
+        Height = height;
+
         Renderer->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         Renderer->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         Renderer->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -47,6 +50,9 @@ namespace Thallium {
     void OpenGLTexture::SetPixels(const glm::vec4* pixels, size_t width, size_t height) {
         Bind();
 
+        Width  = width;
+        Height = height;
+
         Renderer->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         Renderer->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         Renderer->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -57,6 +63,9 @@ namespace Thallium {
 
     void OpenGLTexture::AllocatePixels(size_t width, size_t height) {
         Bind();
+
+        Width  = width;
+        Height = height;
 
         Renderer->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         Renderer->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

@@ -16,8 +16,10 @@ namespace Thallium {
     constexpr uint32_t GL_UNSIGNED_INT  = 5125;
     constexpr uint32_t GL_UNSIGNED_BYTE = 5121;
 
-    constexpr uint32_t GL_RGBA32F = 34836;
-    constexpr uint32_t GL_RGBA    = 6408;
+    constexpr uint32_t GL_RGBA32F          = 34836;
+    constexpr uint32_t GL_DEPTH24_STENCIL8 = 35056;
+
+    constexpr uint32_t GL_RGBA = 6408;
 
     constexpr uint32_t GL_ARRAY_BUFFER         = 34962;
     constexpr uint32_t GL_ELEMENT_ARRAY_BUFFER = 34963;
@@ -42,9 +44,12 @@ namespace Thallium {
     constexpr uint32_t GL_TEXTURE_WRAP_T = 10243;
     constexpr uint32_t GL_CLAMP_TO_EDGE  = 33071;
 
+    constexpr uint32_t GL_RENDERBUFFER = 36161;
+
     constexpr uint32_t GL_FRAMEBUFFER = 36160;
 
     constexpr uint32_t GL_COLOR_ATTACHMENT0 = 36064;
+    constexpr uint32_t GL_DEPTH_STENCIL_ATTACHMENT = 33306;
 
     constexpr uint32_t GL_FRAMEBUFFER_COMPLETE = 36053;
 
@@ -145,18 +150,34 @@ namespace Thallium {
                     TYPE(uint32_t) textarget,                                                                                   \
                     TYPE(uint32_t) texture,                                                                                     \
                     TYPE(int32_t) level)                                                                                        \
+    OPENGL_FUNCTION(uint32_t,                                                                                                   \
+                    glFramebufferRenderbuffer,                                                                                  \
+                    TYPE(uint32_t) target,                                                                                      \
+                    TYPE(uint32_t) attachment,                                                                                  \
+                    TYPE(uint32_t) renderbuffertarget,                                                                          \
+                    TYPE(uint32_t) renderbuffer)                                                                                \
+                                                                                                                                \
+    OPENGL_FUNCTION(void, glGenRenderbuffers, TYPE(uint32_t) n, TYPE(uint32_t*) renderbuffers)                                  \
+    OPENGL_FUNCTION(void, glDeleteRenderbuffers, TYPE(uint32_t) n, TYPE(uint32_t*) renderbuffers)                               \
+    OPENGL_FUNCTION(void, glBindRenderbuffer, TYPE(uint32_t) target, TYPE(uint32_t) renderbuffer)                               \
+    OPENGL_FUNCTION(void,                                                                                                       \
+                    glRenderbufferStorage,                                                                                      \
+                    TYPE(uint32_t) target,                                                                                      \
+                    TYPE(uint32_t) internalFormat,                                                                              \
+                    TYPE(uint32_t) width,                                                                                       \
+                    TYPE(uint32_t) height)                                                                                      \
                                                                                                                                 \
     OPENGL_FUNCTION(void, glDrawArrays, TYPE(uint32_t) mode, TYPE(int32_t) first, TYPE(uint32_t) count)                         \
     OPENGL_FUNCTION(                                                                                                            \
         void, glDrawElements, TYPE(uint32_t) mode, TYPE(uint32_t) count, TYPE(uint32_t) type, TYPE(const void*) indices)
 
+    class OpenGLRenderer: public Renderer {
+    public:
 #define TYPE(type)                      type
 #define OPENGL_FUNCTION(ret, name, ...) typedef ret _cdecl name##FunctionType(__VA_ARGS__);
-    OPENGL_FUNCTIONS
+        OPENGL_FUNCTIONS
 #undef OPENGL_FUNCTION
 #undef TYPE
-
-    class OpenGLRenderer: public Renderer {
     protected:
         OpenGLRenderer() = default;
     public:

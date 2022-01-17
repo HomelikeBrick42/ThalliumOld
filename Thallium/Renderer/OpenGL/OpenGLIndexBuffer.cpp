@@ -3,7 +3,7 @@
 namespace Thallium {
 
     OpenGLIndexBuffer::OpenGLIndexBuffer(Ref<OpenGLRenderer> renderer, const std::span<uint32_t>& indices)
-        : Renderer(renderer), IndexBuffer(0), IndexCount(0) {
+        : Renderer(renderer), IndexBuffer(UINT32_MAX), IndexCount(0) {
         Renderer->glGenBuffers(1, &IndexBuffer);
         SetIndices(indices);
     }

@@ -16,8 +16,15 @@ namespace Thallium {
         void Bind();
         void Unbind();
     public:
+        void Resize(size_t width, size_t height) final;
         Ref<Texture> GetColorAttachment() final {
             return ColorTextureAttachment;
+        }
+        virtual size_t GetWidth() final {
+            return Width;
+        }
+        virtual size_t GetHeight() final {
+            return Height;
         }
     public:
         Ref<Renderer> GetRenderer() final {
@@ -28,6 +35,8 @@ namespace Thallium {
         uint32_t Framebuffer;
         Ref<OpenGLTexture> ColorTextureAttachment;
         uint32_t DepthStencilBufferAttachment;
+        size_t Width;
+        size_t Height;
     };
 
 }

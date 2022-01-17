@@ -9,7 +9,7 @@
 namespace Thallium {
 
     OpenGLShader::OpenGLShader(Ref<OpenGLRenderer> renderer, const std::string& vertexSource, const std::string& fragmentSource)
-        : Renderer(renderer), Program(0) {
+        : Renderer(renderer), Program(UINT32_MAX) {
         uint32_t vertexShader = CreateShader(GL_VERTEX_SHADER, vertexSource.c_str());
         defer(Renderer->glDeleteShader(vertexShader));
         uint32_t fragmentShader = CreateShader(GL_FRAGMENT_SHADER, fragmentSource.c_str());
