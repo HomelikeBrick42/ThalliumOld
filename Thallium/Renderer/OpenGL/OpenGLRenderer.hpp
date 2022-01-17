@@ -9,8 +9,9 @@ namespace Thallium {
 
     constexpr uint32_t GL_DEPTH_TEST = 2929;
 
-    constexpr uint32_t GL_COLOR_BUFFER_BIT = 16384;
-    constexpr uint32_t GL_DEPTH_BUFFER_BIT = 256;
+    constexpr uint32_t GL_COLOR_BUFFER_BIT   = 16384;
+    constexpr uint32_t GL_DEPTH_BUFFER_BIT   = 256;
+    constexpr uint32_t GL_STENCIL_BUFFER_BIT = 1024;
 
     constexpr uint32_t GL_FLOAT         = 5126;
     constexpr uint32_t GL_UNSIGNED_INT  = 5125;
@@ -46,9 +47,11 @@ namespace Thallium {
 
     constexpr uint32_t GL_RENDERBUFFER = 36161;
 
-    constexpr uint32_t GL_FRAMEBUFFER = 36160;
+    constexpr uint32_t GL_FRAMEBUFFER      = 36160;
+    constexpr uint32_t GL_READ_FRAMEBUFFER = 36008;
+    constexpr uint32_t GL_DRAW_FRAMEBUFFER = 36009;
 
-    constexpr uint32_t GL_COLOR_ATTACHMENT0 = 36064;
+    constexpr uint32_t GL_COLOR_ATTACHMENT0        = 36064;
     constexpr uint32_t GL_DEPTH_STENCIL_ATTACHMENT = 33306;
 
     constexpr uint32_t GL_FRAMEBUFFER_COMPLETE = 36053;
@@ -143,14 +146,26 @@ namespace Thallium {
     OPENGL_FUNCTION(void, glDeleteFramebuffers, TYPE(uint32_t) n, TYPE(uint32_t*) ids)                                          \
     OPENGL_FUNCTION(void, glBindFramebuffer, TYPE(uint32_t) target, TYPE(uint32_t) framebuffer)                                 \
     OPENGL_FUNCTION(uint32_t, glCheckFramebufferStatus, TYPE(uint32_t) target)                                                  \
-    OPENGL_FUNCTION(uint32_t,                                                                                                   \
+    OPENGL_FUNCTION(void,                                                                                                       \
+                    glBlitFramebuffer,                                                                                          \
+                    TYPE(int32_t) srcX0,                                                                                        \
+                    TYPE(int32_t) srcY0,                                                                                        \
+                    TYPE(int32_t) srcX1,                                                                                        \
+                    TYPE(int32_t) srcY1,                                                                                        \
+                    TYPE(int32_t) dstX0,                                                                                        \
+                    TYPE(int32_t) dstY0,                                                                                        \
+                    TYPE(int32_t) dstX1,                                                                                        \
+                    TYPE(int32_t) dstY1,                                                                                        \
+                    TYPE(uint32_t) mask,                                                                                        \
+                    TYPE(uint32_t) filter)                                                                                      \
+    OPENGL_FUNCTION(void,                                                                                                       \
                     glFramebufferTexture2D,                                                                                     \
                     TYPE(uint32_t) target,                                                                                      \
                     TYPE(uint32_t) attachment,                                                                                  \
                     TYPE(uint32_t) textarget,                                                                                   \
                     TYPE(uint32_t) texture,                                                                                     \
                     TYPE(int32_t) level)                                                                                        \
-    OPENGL_FUNCTION(uint32_t,                                                                                                   \
+    OPENGL_FUNCTION(void,                                                                                                       \
                     glFramebufferRenderbuffer,                                                                                  \
                     TYPE(uint32_t) target,                                                                                      \
                     TYPE(uint32_t) attachment,                                                                                  \

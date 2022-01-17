@@ -19,6 +19,7 @@ namespace Thallium {
         virtual ~Framebuffer()          = default;
     public:
         virtual void Resize(size_t width, size_t height) = 0;
+        virtual void CopyInto(Ref<Framebuffer> dest)     = 0;
         virtual Ref<Texture> GetColorAttachment()        = 0;
         virtual size_t GetWidth()                        = 0;
         virtual size_t GetHeight()                       = 0;

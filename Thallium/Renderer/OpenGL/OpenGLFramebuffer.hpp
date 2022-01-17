@@ -17,6 +17,7 @@ namespace Thallium {
         void Unbind();
     public:
         void Resize(size_t width, size_t height) final;
+        void CopyInto(Ref<Framebuffer> dest) final;
         Ref<Texture> GetColorAttachment() final {
             return ColorTextureAttachment;
         }

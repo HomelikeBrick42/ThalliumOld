@@ -103,7 +103,8 @@ namespace Thallium {
 
     void OpenGLRenderer::Clear(const glm::vec4& color) {
         glClearColor(color.r, color.g, color.b, color.a);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Do we clear the depth buffer here?
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+                GL_STENCIL_BUFFER_BIT); // TODO: Do we clear the depth and stencil buffer here?
     }
 
     void OpenGLRenderer::BeginScene(const Transform& cameraTransform,

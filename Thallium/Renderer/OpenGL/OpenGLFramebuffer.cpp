@@ -64,4 +64,20 @@ namespace Thallium {
         }
     }
 
+    void OpenGLFramebuffer::CopyInto(Ref<Thallium::Framebuffer> dest) {
+        Ref<OpenGLFramebuffer> dst = dest.As<OpenGLFramebuffer>();
+        Renderer->glBindFramebuffer(GL_READ_FRAMEBUFFER, Framebuffer);
+        Renderer->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dst->Framebuffer);
+        Renderer->glBlitFramebuffer(0,
+                                    0,
+                                    Width,
+                                    Height,
+                                    0,
+                                    0,
+                                    dst->Width,
+                                    dst->Height,
+                                    GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT,
+                                    GL_NEAREST);
+    }
+
 }
