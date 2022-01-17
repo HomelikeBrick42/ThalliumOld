@@ -17,8 +17,8 @@ namespace Thallium {
         Texture(Texture&&)      = delete;
         virtual ~Texture()      = default;
     public:
-        virtual void SetPixels(const std::span<glm::u8vec4>& pixels, size_t width, size_t height) = 0;
-        virtual void SetPixels(const std::span<glm::vec4>& pixels, size_t width, size_t height) = 0;
+        virtual void SetPixels(const glm::u8vec4* pixels, size_t width, size_t height) = 0;
+        virtual void SetPixels(const glm::vec4* pixels, size_t width, size_t height) = 0;
         virtual size_t GetWidth() = 0;
         virtual size_t GetHeight() = 0;
     public:

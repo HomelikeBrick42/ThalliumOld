@@ -11,15 +11,15 @@ namespace Thallium {
     class OpenGLTexture final: public Texture {
         friend class OpenGLRenderer;
     public:
-        OpenGLTexture(Ref<OpenGLRenderer> renderer, const std::span<glm::u8vec4>& pixels, size_t width, size_t height);
-        OpenGLTexture(Ref<OpenGLRenderer> renderer, const std::span<glm::vec4>& pixels, size_t width, size_t height);
+        OpenGLTexture(Ref<OpenGLRenderer> renderer, const glm::u8vec4* pixels, size_t width, size_t height);
+        OpenGLTexture(Ref<OpenGLRenderer> renderer, const glm::vec4* pixels, size_t width, size_t height);
         ~OpenGLTexture() final;
     public:
         void Bind();
         void Bind(uint8_t location);
     public:
-        void SetPixels(const std::span<glm::u8vec4>& pixels, size_t width, size_t height) final;
-        void SetPixels(const std::span<glm::vec4>& pixels, size_t width, size_t height) final;
+        void SetPixels(const glm::u8vec4* pixels, size_t width, size_t height) final;
+        void SetPixels(const glm::vec4* pixels, size_t width, size_t height) final;
         size_t GetWidth() final {
             return Width;
         }

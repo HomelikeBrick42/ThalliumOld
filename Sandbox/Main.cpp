@@ -59,11 +59,14 @@ int main(int, char**) {
         .Color = { 1.0f, 1.0f, 1.0f, 1.0f },
     };
 
-    glm::u8vec4 textureData[] = {
-        { 0xFF, 0xFF, 0x00, 0xFF },
+    glm::vec4 textureData[] = {
+        { 1.0f, 1.0f, 0.0f, 1.0f },
+        { 1.0f, 0.0f, 1.0f, 1.0f },
+        { 0.0f, 1.0f, 1.0f, 1.0f },
+        { 0.0f, 1.0f, 0.0f, 1.0f },
     };
 
-    Ref<OpenGLTexture> texture = renderer->CreateTexture(textureData, 1, 1).As<OpenGLTexture>();
+    Ref<OpenGLTexture> texture = renderer->CreateTexture(textureData, 2, 2).As<OpenGLTexture>();
 
     texture->Bind(0);
     quadShader->SetIntUniform("u_Texture", 0);

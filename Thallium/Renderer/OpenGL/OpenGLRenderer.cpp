@@ -84,11 +84,11 @@ namespace Thallium {
         return Ref<OpenGLIndexBuffer>::Create(this, indices);
     }
 
-    Ref<Texture> OpenGLRenderer::CreateTexture(const std::span<glm::u8vec4>& pixels, size_t width, size_t height) {
+    Ref<Texture> OpenGLRenderer::CreateTexture(const glm::u8vec4* pixels, size_t width, size_t height) {
         return Ref<OpenGLTexture>::Create(this, pixels, width, height);
     }
 
-    Ref<Texture> OpenGLRenderer::CreateTexture(const std::span<glm::vec4>& pixels, size_t width, size_t height) {
+    Ref<Texture> OpenGLRenderer::CreateTexture(const glm::vec4* pixels, size_t width, size_t height) {
         return Ref<OpenGLTexture>::Create(this, pixels, width, height);
     }
 
