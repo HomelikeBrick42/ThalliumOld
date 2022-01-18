@@ -55,7 +55,6 @@ int main(int, char**) {
         1024);
 
     window->SetResizeCallback([&](Ref<Window>, uint32_t width, uint32_t height) {
-        renderer->OnResize(width, height);
         framebuffer->Resize(width, height);
         camera.Width  = width;
         camera.Height = height;

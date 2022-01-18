@@ -121,10 +121,6 @@ namespace Thallium {
         FreeLibrary(OpenGLLibrary);
     }
 
-    void WindowsOpenGLRenderer::OnResize(uint32_t width, uint32_t height) {
-        glViewport(0, 0, width, height);
-    }
-
     void WindowsOpenGLRenderer::Present() {
         SwapBuffers(Window->DeviceContext);
     }

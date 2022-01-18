@@ -12,7 +12,6 @@ namespace Thallium {
         WindowsOpenGLRenderer(Ref<WindowsWindow> window);
         ~WindowsOpenGLRenderer() final;
     public:
-        void OnResize(uint32_t width, uint32_t height) final;
         void Present() final;
     public:
         Ref<Window> GetWindow() {

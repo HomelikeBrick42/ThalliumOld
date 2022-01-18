@@ -39,7 +39,6 @@ namespace Thallium {
                                  Ref<Shader> shader,
                                  const Transform& transform,
                                  const Material& material)              = 0;
-        virtual void OnResize(uint32_t width, uint32_t height)          = 0;
         virtual void Present()                                          = 0;
     public:
         virtual Ref<Shader> CreateShader(const std::string& filepath) = 0;
