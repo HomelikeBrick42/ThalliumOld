@@ -3,6 +3,7 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <sourceRoots>
+      <file path="$PROJECT_DIR$/ECSTesting" />
       <file path="$PROJECT_DIR$/PhysicsGame" />
       <file path="$PROJECT_DIR$/PortalTesting" />
       <file path="$PROJECT_DIR$/Thallium" />
