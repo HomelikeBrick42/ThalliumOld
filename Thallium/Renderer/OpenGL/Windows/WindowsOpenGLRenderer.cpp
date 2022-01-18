@@ -80,6 +80,40 @@ namespace Thallium {
         }
         OPENGL_FUNCTIONS
     #undef OPENGL_FUNCTION
+
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glDebugMessageCallback(
+            [](uint32_t source,
+               uint32_t type,
+               uint32_t id,
+               uint32_t severity,
+               uint32_t length,
+               const char* message,
+               void* userParam) {
+                switch (severity) {
+                    case GL_DEBUG_SEVERITY_HIGH: {
+                        std::cerr << std::format("gl.DEBUG_SEVERITY_HIGH: '{}'\n", message) << std::endl;
+                    } break;
+
+                    case GL_DEBUG_SEVERITY_MEDIUM: {
+                        std::cerr << std::format("gl.DEBUG_SEVERITY_MEDIUM: '{}'\n", message) << std::endl;
+                    } break;
+
+                    case GL_DEBUG_SEVERITY_LOW: {
+                        std::cerr << std::format("gl.DEBUG_SEVERITY_LOW: '{}'\n", message) << std::endl;
+                    } break;
+
+                    case GL_DEBUG_SEVERITY_NOTIFICATION: {
+                        std::cerr << std::format("gl.DEBUG_SEVERITY_NOTIFICATION: '{}'\n", message) << std::endl;
+                    } break;
+
+                    default: {
+                        std::cerr << std::format("gl.DEBUG_SEVERITY_UNKNOWN: '{}'\n", message) << std::endl;
+                    } break;
+                }
+            },
+            nullptr);
     }
 
     WindowsOpenGLRenderer::~WindowsOpenGLRenderer() {

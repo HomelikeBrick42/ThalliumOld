@@ -16,6 +16,7 @@ namespace Thallium {
     public:
         void Bind();
         void SetMat4Uniform(const std::string& name, const glm::mat4& matrix);
+        void SetVec2Uniform(const std::string& name, const glm::vec2& value);
         void SetVec4Uniform(const std::string& name, const glm::vec4& value);
         void SetIntUniform(const std::string& name, int32_t value);
     public:

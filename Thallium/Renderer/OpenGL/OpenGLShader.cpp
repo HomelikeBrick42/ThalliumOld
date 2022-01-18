@@ -73,6 +73,11 @@ namespace Thallium {
         Renderer->glUniformMatrix4fv(Renderer->glGetUniformLocation(Program, name.c_str()), 1, false, glm::value_ptr(matrix));
     }
 
+    void OpenGLShader::SetVec2Uniform(const std::string& name, const glm::vec2& value) {
+        Bind();
+        Renderer->glUniform2fv(Renderer->glGetUniformLocation(Program, name.c_str()), 1, glm::value_ptr(value));
+    }
+
     void OpenGLShader::SetVec4Uniform(const std::string& name, const glm::vec4& value) {
         Bind();
         Renderer->glUniform4fv(Renderer->glGetUniformLocation(Program, name.c_str()), 1, glm::value_ptr(value));

@@ -107,17 +107,19 @@ namespace Thallium {
                 GL_STENCIL_BUFFER_BIT); // TODO: Do we clear the depth and stencil buffer here?
     }
 
-    void OpenGLRenderer::BeginScene(const Transform& cameraTransform,
+    void OpenGLRenderer::BeginScene(const glm::mat4& cameraTransform,
                                     const glm::mat4& projectionMatrix,
                                     bool depthTest,
                                     Ref<Framebuffer> framebuffer) {
-        ViewMatrix         = glm::inverse(cameraTransform.ToMatrix());
+        ViewMatrix         = glm::inverse(cameraTransform);
         ProjectionMatrix   = projectionMatrix;
         CurrentFramebuffer = framebuffer;
         if (CurrentFramebuffer) {
             CurrentFramebuffer.As<OpenGLFramebuffer>()->Bind();
+            glViewport(0, 0, CurrentFramebuffer->GetWidth(), CurrentFramebuffer->GetHeight());
         } else {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glViewport(0, 0, GetWindow()->GetWidth(), GetWindow()->GetHeight());
         }
         if (depthTest) {
             glEnable(GL_DEPTH_TEST);
@@ -146,6 +148,21 @@ namespace Thallium {
         openGLShader->SetMat4Uniform("u_ViewMatrix", ViewMatrix);
         openGLShader->SetMat4Uniform("u_ProjectionMatrix", ProjectionMatrix);
         openGLShader->SetVec4Uniform("u_Color", material.Color);
+        if (CurrentFramebuffer) {
+            openGLShader->SetVec2Uniform("u_ScreenSize", { CurrentFramebuffer->GetWidth(), CurrentFramebuffer->GetHeight() });
+        } else {
+            openGLShader->SetVec2Uniform("u_ScreenSize", { GetWindow()->GetWidth(), GetWindow()->GetHeight() });
+        }
+        Ref<Texture> texture = material.Texture;
+        if (!texture) {
+            if (!WhitePixelTexture) {
+                glm::u8vec4 pixels = { 0xFF, 0xFF, 0xFF, 0xFF };
+                WhitePixelTexture  = CreateTexture(&pixels, 1, 1);
+            }
+            texture = WhitePixelTexture;
+        }
+        texture.As<OpenGLTexture>()->Bind(0);
+        openGLShader->SetIntUniform("u_Texture", 0);
         glDrawArrays(GL_TRIANGLES, static_cast<int32_t>(first), static_cast<uint32_t>(count));
     }
 
@@ -162,6 +179,11 @@ namespace Thallium {
         openGLShader->SetMat4Uniform("u_ViewMatrix", ViewMatrix);
         openGLShader->SetMat4Uniform("u_ProjectionMatrix", ProjectionMatrix);
         openGLShader->SetVec4Uniform("u_Color", material.Color);
+        if (CurrentFramebuffer) {
+            openGLShader->SetVec2Uniform("u_ScreenSize", { CurrentFramebuffer->GetWidth(), CurrentFramebuffer->GetHeight() });
+        } else {
+            openGLShader->SetVec2Uniform("u_ScreenSize", { GetWindow()->GetWidth(), GetWindow()->GetHeight() });
+        }
         Ref<Texture> texture = material.Texture;
         if (!texture) {
             if (!WhitePixelTexture) {

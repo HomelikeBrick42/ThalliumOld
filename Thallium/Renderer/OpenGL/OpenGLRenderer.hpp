@@ -7,6 +7,14 @@
 
 namespace Thallium {
 
+    constexpr uint32_t GL_DEBUG_OUTPUT             = 37600;
+    constexpr uint32_t GL_DEBUG_OUTPUT_SYNCHRONOUS = 33346;
+
+    constexpr uint32_t GL_DEBUG_SEVERITY_HIGH         = 0x9146;
+    constexpr uint32_t GL_DEBUG_SEVERITY_MEDIUM       = 0x9147;
+    constexpr uint32_t GL_DEBUG_SEVERITY_LOW          = 0x9148;
+    constexpr uint32_t GL_DEBUG_SEVERITY_NOTIFICATION = 0x826B;
+
     constexpr uint32_t GL_DEPTH_TEST = 2929;
 
     constexpr uint32_t GL_COLOR_BUFFER_BIT   = 16384;
@@ -58,6 +66,9 @@ namespace Thallium {
 
     constexpr uint32_t GL_TRIANGLES = 4;
 
+    typedef void(_cdecl* OpenGLDebugFunctionType)(
+        uint32_t source, uint32_t type, uint32_t id, uint32_t severity, uint32_t length, const char* message, void* userParam);
+
 #define OPENGL_FUNCTIONS                                                                                                        \
     OPENGL_FUNCTION(void, glEnable, TYPE(uint32_t) cap)                                                                         \
     OPENGL_FUNCTION(void, glDisable, TYPE(uint32_t) cap)                                                                        \
@@ -66,6 +77,8 @@ namespace Thallium {
     OPENGL_FUNCTION(void, glClear, TYPE(uint32_t) mask)                                                                         \
                                                                                                                                 \
     OPENGL_FUNCTION(void, glViewport, TYPE(int32_t) x, TYPE(int32_t) y, TYPE(uint32_t) width, TYPE(uint32_t) height)            \
+                                                                                                                                \
+    OPENGL_FUNCTION(void, glDebugMessageCallback, TYPE(OpenGLDebugFunctionType) callback, TYPE(void*) userParam)                \
                                                                                                                                 \
     OPENGL_FUNCTION(void, glGenVertexArrays, TYPE(uint32_t) n, TYPE(uint32_t*) arrays)                                          \
     OPENGL_FUNCTION(void, glDeleteVertexArrays, TYPE(uint32_t) n, TYPE(uint32_t*) arrays)                                       \
@@ -115,6 +128,7 @@ namespace Thallium {
     OPENGL_FUNCTION(int32_t, glGetUniformLocation, TYPE(uint32_t) program, TYPE(const char*) name)                              \
     OPENGL_FUNCTION(                                                                                                            \
         void, glUniformMatrix4fv, TYPE(int32_t) location, TYPE(uint32_t) count, TYPE(bool) transpose, TYPE(const float*) value) \
+    OPENGL_FUNCTION(void, glUniform2fv, TYPE(int32_t) location, TYPE(uint32_t) count, TYPE(const float*) value)                 \
     OPENGL_FUNCTION(void, glUniform4fv, TYPE(int32_t) location, TYPE(uint32_t) count, TYPE(const float*) value)                 \
     OPENGL_FUNCTION(void, glUniform1i, TYPE(int32_t) location, TYPE(int32_t) v0)                                                \
                                                                                                                                 \
@@ -200,7 +214,7 @@ namespace Thallium {
         virtual ~OpenGLRenderer() = default;
     public:
         void Clear(const glm::vec4& color) final;
-        void BeginScene(const Transform& cameraTransform,
+        void BeginScene(const glm::mat4& cameraTransform,
                         const glm::mat4& projectionMatrix,
                         bool depthTest,
                         Ref<Framebuffer> framebuffer = nullptr) final;

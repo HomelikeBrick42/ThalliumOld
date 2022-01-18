@@ -23,7 +23,7 @@ namespace Thallium {
         virtual ~Renderer()       = default;
     public:
         virtual void Clear(const glm::vec4& color)                      = 0;
-        virtual void BeginScene(const Transform& cameraTransform,
+        virtual void BeginScene(const glm::mat4& cameraTransform,
                                 const glm::mat4& projectionMatrix,
                                 bool depthTest,
                                 Ref<Framebuffer> framebuffer = nullptr) = 0;
