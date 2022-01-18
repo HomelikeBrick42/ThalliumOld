@@ -7,6 +7,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 #include <iostream>
 
@@ -28,7 +29,7 @@ struct Portal {
 };
 
 int main(int, char**) {
-    Ref<Window> window     = Window::Create(640, 480, "Sandbox");
+    Ref<Window> window     = Window::Create(640, 480, "PortalTesting");
     Ref<Renderer> renderer = Renderer::CreateOpenGLRenderer(window);
 
     bool running = true;
@@ -118,6 +119,8 @@ int main(int, char**) {
     clock.Start();
     double lastTime = clock.GetElapsed();
 
+    float lastCameraPortalDot = 0.0f;
+
     window->Show();
     window->DisableCursor();
     while (running) {
@@ -128,6 +131,23 @@ int main(int, char**) {
         defer(lastTime = time);
 
         camera.OnUpdate(dt);
+
+        float cameraPortalDot =
+            glm::dot(camera.Transform.Position - portal.In.Position, portal.In.Rotation * glm::vec3{ 0.0f, 0.0f, 1.0f });
+        if (glm::sign(cameraPortalDot) != glm::sign(lastCameraPortalDot) &&
+            glm::compMax(camera.Transform.Position - portal.In.Position) <= 0.5f) {
+            glm::mat4 transformation = portal.Out.ToMatrix() * glm::inverse(portal.In.ToMatrix()) * camera.Transform.ToMatrix();
+            glm::vec3 scale;
+            glm::quat rotation;
+            glm::vec3 translation;
+            glm::vec3 skew;
+            glm::vec4 perspective;
+            glm::decompose(transformation, scale, rotation, translation, skew, perspective);
+            camera.Transform.Position = translation;
+            camera.Transform.Rotation = rotation;
+            camera.Transform.Scale    = scale;
+        }
+        lastCameraPortalDot = cameraPortalDot;
 
         constexpr size_t RecursionLimit = 3;
         glm::mat4 portalMatrices[RecursionLimit];

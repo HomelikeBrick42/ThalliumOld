@@ -59,13 +59,13 @@ endif ()
 target_include_directories(PhysicsGame PRIVATE ./ ./PhysicsGame vendor/glm)
 
 add_executable(
-        Sandbox
-        Sandbox/Camera.cpp
-        Sandbox/Camera.hpp
-        Sandbox/Main.cpp)
-target_link_libraries(Sandbox Thallium glm)
-target_compile_options(Sandbox PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
+        PortalTesting
+        PortalTesting/Camera.cpp
+        PortalTesting/Camera.hpp
+        PortalTesting/Main.cpp)
+target_link_libraries(PortalTesting Thallium glm)
+target_compile_options(PortalTesting PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
 if (CMAKE_BUILD_TYPE MATCHES Release)
-    target_compile_options(Sandbox PRIVATE -O2)
+    target_compile_options(PortalTesting PRIVATE -O2)
 endif ()
-target_include_directories(Sandbox PRIVATE ./ ./Sandbox vendor/glm)
+target_include_directories(PortalTesting PRIVATE ./ PortalTesting vendor/glm)
