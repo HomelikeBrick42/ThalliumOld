@@ -129,32 +129,38 @@ int main(int, char**) {
 
         camera.OnUpdate(dt);
 
-        // Render scene from the portal's view
-        renderer->BeginScene(portal.Out.ToMatrix() * glm::inverse(portal.In.ToMatrix()) * camera.Transform.ToMatrix(),
-                             portal.ProjectionMatrix,
-                             true,
-                             portal.MainTexture);
-        renderer->Clear({ 0.2f, 0.3f, 0.8f, 1.0f });
-        renderer->DrawIndexed(quadVertexBuffer,
-                              quadIndexBuffer,
-                              quadShader,
-                              {
-                                  .Position = { 0.5f, 0.0f, -1.0f },
-                                  .Scale    = { 0.5f, 0.5f, 0.5f },
-                              },
-                              quadMaterial);
+        constexpr size_t RecursionLimit = 3;
+        glm::mat4 portalMatrices[RecursionLimit];
+        glm::mat4 currentPortalMatrix = camera.Transform;
+        for (size_t i = 0; i < RecursionLimit; i++) {
+            currentPortalMatrix = portal.Out.ToMatrix() * glm::inverse(portal.In.ToMatrix()) * currentPortalMatrix;
+            portalMatrices[RecursionLimit - i - 1] = currentPortalMatrix;
+        }
 
-        renderer->DrawIndexed(quadVertexBuffer,
-                              quadIndexBuffer,
-                              portalShader,
-                              portal.In,
-                              {
-                                  .Color   = { 0.9f, 0.9f, 0.9f, 1.0f },
-                                  .Texture = portal.LastTexture->GetColorAttachment(),
-                              });
-        renderer->EndScene();
+        for (size_t i = 0; i < RecursionLimit; i++) {
+            // Render scene from the portal's view
+            renderer->BeginScene(portalMatrices[i], portal.ProjectionMatrix, true, portal.MainTexture);
+            renderer->Clear({ 0.2f, 0.3f, 0.8f, 1.0f });
+            renderer->DrawIndexed(quadVertexBuffer,
+                                  quadIndexBuffer,
+                                  quadShader,
+                                  {
+                                      .Position = { 0.5f, 0.0f, -1.0f },
+                                      .Scale    = { 0.5f, 0.5f, 0.5f },
+                                  },
+                                  quadMaterial);
 
-        portal.MainTexture->CopyInto(portal.LastTexture);
+            renderer->DrawIndexed(quadVertexBuffer,
+                                  quadIndexBuffer,
+                                  portalShader,
+                                  portal.In,
+                                  {
+                                      .Color   = { 0.9f, 0.9f, 0.9f, 1.0f },
+                                      .Texture = portal.LastTexture->GetColorAttachment(),
+                                  });
+            renderer->EndScene();
+            portal.MainTexture->CopyInto(portal.LastTexture);
+        }
 
         // Render scene
         renderer->BeginScene(camera.Transform, camera.ProjectionMatrix, true, framebuffer);
