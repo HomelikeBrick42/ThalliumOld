@@ -40,6 +40,9 @@ add_library(
         Thallium/Renderer/OpenGL/Windows/WindowsOpenGLRenderer.hpp)
 target_link_libraries(Thallium glm)
 target_compile_options(Thallium PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
+if (CMAKE_BUILD_TYPE MATCHES Release)
+    target_compile_options(Thallium PRIVATE -O2)
+endif ()
 target_include_directories(Thallium PRIVATE ./ vendor/glm)
 target_link_libraries(Thallium OpenGL32)
 
@@ -50,6 +53,9 @@ add_executable(
         PhysicsGame/ObjLoader.hpp)
 target_link_libraries(PhysicsGame Thallium glm)
 target_compile_options(PhysicsGame PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
+if (CMAKE_BUILD_TYPE MATCHES Release)
+    target_compile_options(PhysicsGame PRIVATE -O2)
+endif ()
 target_include_directories(PhysicsGame PRIVATE ./ ./PhysicsGame vendor/glm)
 
 add_executable(
@@ -59,4 +65,7 @@ add_executable(
         Sandbox/Main.cpp)
 target_link_libraries(Sandbox Thallium glm)
 target_compile_options(Sandbox PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
+if (CMAKE_BUILD_TYPE MATCHES Release)
+    target_compile_options(Sandbox PRIVATE -O2)
+endif ()
 target_include_directories(Sandbox PRIVATE ./ ./Sandbox vendor/glm)
