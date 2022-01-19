@@ -50,7 +50,7 @@ namespace Thallium {
         virtual Ref<Texture> CreateTexture(size_t width, size_t height)                                          = 0;
         virtual Ref<Framebuffer> CreateFramebuffer(Ref<Texture> colorAttachment, bool hasDepthStencilAttachment) = 0;
     public:
-        virtual Ref<Window> GetWindow() = 0;
+        virtual Ref<Window> GetWindow() const = 0;
     public:
         static Ref<Renderer> CreateOpenGLRenderer(Ref<Window> window);
     };

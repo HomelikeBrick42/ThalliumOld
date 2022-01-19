@@ -15,7 +15,7 @@ namespace Thallium {
         Shader(Shader&&)      = delete;
         virtual ~Shader()     = default;
     public:
-        virtual Ref<Renderer> GetRenderer() = 0;
+        virtual Ref<Renderer> GetRenderer() const = 0;
     };
 
 }

@@ -111,6 +111,10 @@ namespace Thallium {
                                     const glm::mat4& projectionMatrix,
                                     bool depthTest,
                                     Ref<Framebuffer> framebuffer) {
+        if (framebuffer) {
+            assert(framebuffer->GetRenderer().Raw() == this);
+        }
+
         ViewMatrix         = glm::inverse(cameraTransform);
         ProjectionMatrix   = projectionMatrix;
         CurrentFramebuffer = framebuffer;
@@ -141,6 +145,12 @@ namespace Thallium {
                               size_t count,
                               const Transform& transform,
                               const Material& material) {
+        assert(vertexBuffer->GetRenderer().Raw() == this);
+        assert(shader->GetRenderer().Raw() == this);
+        if (material.Texture) {
+            assert(material.Texture->GetRenderer().Raw() == this);
+        }
+
         vertexBuffer.As<OpenGLVertexBuffer>()->Bind();
         Ref<OpenGLShader> openGLShader = shader.As<OpenGLShader>();
         openGLShader->Bind();
@@ -171,6 +181,13 @@ namespace Thallium {
                                      Ref<Shader> shader,
                                      const Transform& transform,
                                      const Material& material) {
+        assert(vertexBuffer->GetRenderer().Raw() == this);
+        assert(indexBuffer->GetRenderer().Raw() == this);
+        assert(shader->GetRenderer().Raw() == this);
+        if (material.Texture) {
+            assert(material.Texture->GetRenderer().Raw() == this);
+        }
+
         vertexBuffer.As<OpenGLVertexBuffer>()->Bind();
         indexBuffer.As<OpenGLIndexBuffer>()->Bind();
         Ref<OpenGLShader> openGLShader = shader.As<OpenGLShader>();

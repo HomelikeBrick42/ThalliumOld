@@ -18,17 +18,17 @@ namespace Thallium {
     public:
         void Resize(size_t width, size_t height) final;
         void CopyInto(Ref<Framebuffer> dest) final;
-        Ref<Texture> GetColorAttachment() final {
+        Ref<Texture> GetColorAttachment() const final {
             return ColorTextureAttachment;
         }
-        virtual size_t GetWidth() final {
+        virtual size_t GetWidth() const final {
             return Width;
         }
-        virtual size_t GetHeight() final {
+        virtual size_t GetHeight() const final {
             return Height;
         }
     public:
-        Ref<Renderer> GetRenderer() final {
+        Ref<Renderer> GetRenderer() const final {
             return Renderer;
         }
     private:

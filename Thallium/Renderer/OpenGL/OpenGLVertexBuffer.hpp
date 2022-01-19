@@ -16,7 +16,7 @@ namespace Thallium {
         void SetLayout(const std::span<Element>& layout) final;
         void Bind();
     public:
-        Ref<Renderer> GetRenderer() final {
+        Ref<Renderer> GetRenderer() const final {
             return Renderer;
         }
     private:

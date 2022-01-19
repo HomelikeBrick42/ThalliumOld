@@ -14,7 +14,7 @@ namespace Thallium {
     public:
         void Present() final;
     public:
-        Ref<Window> GetWindow() {
+        Ref<Window> GetWindow() const {
             return Window;
         }
     protected:

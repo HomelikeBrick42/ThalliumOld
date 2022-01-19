@@ -25,14 +25,14 @@ namespace Thallium {
         void AllocatePixels(size_t width, size_t height) final;
         void GetPixels(glm::u8vec4* outPixels) final;
         void GetPixels(glm::vec4* outPixels) final;
-        size_t GetWidth() final {
+        size_t GetWidth() const final {
             return Width;
         }
-        size_t GetHeight() final {
+        size_t GetHeight() const final {
             return Height;
         }
     public:
-        Ref<Renderer> GetRenderer() final {
+        Ref<Renderer> GetRenderer() const final {
             return Renderer;
         }
     private:

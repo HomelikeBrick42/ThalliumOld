@@ -20,11 +20,11 @@ namespace Thallium {
     public:
         virtual void Resize(size_t width, size_t height) = 0;
         virtual void CopyInto(Ref<Framebuffer> dest)     = 0;
-        virtual Ref<Texture> GetColorAttachment()        = 0;
-        virtual size_t GetWidth()                        = 0;
-        virtual size_t GetHeight()                       = 0;
+        virtual Ref<Texture> GetColorAttachment() const  = 0;
+        virtual size_t GetWidth() const                  = 0;
+        virtual size_t GetHeight() const                 = 0;
     public:
-        virtual Ref<Renderer> GetRenderer() = 0;
+        virtual Ref<Renderer> GetRenderer() const = 0;
     };
 
 }

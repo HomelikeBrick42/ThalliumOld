@@ -22,10 +22,10 @@ namespace Thallium {
         virtual void AllocatePixels(size_t width, size_t height)                       = 0;
         virtual void GetPixels(glm::u8vec4* outPixels)                                 = 0;
         virtual void GetPixels(glm::vec4* outPixels)                                   = 0;
-        virtual size_t GetWidth()                                                      = 0;
-        virtual size_t GetHeight()                                                     = 0;
+        virtual size_t GetWidth() const                                                = 0;
+        virtual size_t GetHeight() const                                               = 0;
     public:
-        virtual Ref<Renderer> GetRenderer() = 0;
+        virtual Ref<Renderer> GetRenderer() const = 0;
     };
 
 }

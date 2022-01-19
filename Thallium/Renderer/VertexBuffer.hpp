@@ -33,7 +33,7 @@ namespace Thallium {
         virtual void SetData(const void* data, size_t size)      = 0;
         virtual void SetLayout(const std::span<Element>& layout) = 0;
     public:
-        virtual Ref<Renderer> GetRenderer() = 0;
+        virtual Ref<Renderer> GetRenderer() const = 0;
     };
 
 }

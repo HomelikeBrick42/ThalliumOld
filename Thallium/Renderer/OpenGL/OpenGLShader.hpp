@@ -20,7 +20,7 @@ namespace Thallium {
         void SetVec4Uniform(const std::string& name, const glm::vec4& value);
         void SetIntUniform(const std::string& name, int32_t value);
     public:
-        Ref<Renderer> GetRenderer() final {
+        Ref<Renderer> GetRenderer() const final {
             return Renderer;
         }
     private:

@@ -13,12 +13,12 @@ namespace Thallium {
         ~OpenGLIndexBuffer() final;
     public:
         void SetIndices(const std::span<uint32_t>& indices) final;
-        size_t GetIndexCount() final {
+        size_t GetIndexCount() const final {
             return IndexCount;
         }
         void Bind();
     public:
-        Ref<Renderer> GetRenderer() final {
+        Ref<Renderer> GetRenderer() const final {
             return Renderer;
         }
     private:

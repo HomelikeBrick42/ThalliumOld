@@ -14,6 +14,10 @@ namespace Thallium {
         , DepthStencilBufferAttachment(UINT32_MAX)
         , Width(ColorTextureAttachment->GetWidth())
         , Height(ColorTextureAttachment->GetHeight()) {
+        if (ColorTextureAttachment) {
+            assert(ColorTextureAttachment->GetRenderer() == Renderer);
+        }
+
         Renderer->glGenFramebuffers(1, &Framebuffer);
 
         if (hasDepthStencilAttachment) {
