@@ -5,7 +5,7 @@
 
 #include "ObjLoader.hpp"
 
-#include "Thallium/Core/Transform.hpp"
+#include "Thallium/Scene/Transform.hpp"
 
 #include <cmath>
 
@@ -116,7 +116,6 @@ int main(int, char**) {
         glm::perspective(glm::radians(60.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.001f, 1000.0f);
 
     window->SetResizeCallback([&](Ref<Window> window, uint32_t width, uint32_t height) {
-        renderer->OnResize(width, height);
         projectionMatrix =
             glm::perspective(glm::radians(60.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.001f, 1000.0f);
     });
@@ -273,9 +272,9 @@ int main(int, char**) {
             // Camera
             {
                 float speed       = keys[KeyCode_Control] ? 5.0f : 2.0f;
-                glm::vec3 forward = cameraTransform.Rotation * glm::vec3{ 0.0f, 0.0f, 1.0f };
-                glm::vec3 right   = cameraTransform.Rotation * glm::vec3{ 1.0f, 0.0f, 0.0f };
-                glm::vec3 up      = cameraTransform.Rotation * glm::vec3{ 0.0f, 1.0f, 0.0f };
+                glm::vec3 forward = cameraTransform.GetForward();
+                glm::vec3 right   = cameraTransform.GetRight();
+                glm::vec3 up      = cameraTransform.GetUp();
 
                 float cameraSensitivity  = 1.0f;
                 glm::vec2 cameraMovement = (glm::vec2)mouseMovement /
@@ -380,7 +379,7 @@ int main(int, char**) {
 
             // UI
             renderer->BeginScene(
-                {},
+                glm::identity<glm::mat4>(),
                 glm::scale(glm::identity<glm::mat4>(), { 1.0f, (float)window->GetWidth() / (float)window->GetHeight(), 1.0f }),
                 false);
             renderer->DrawIndexed(crosshairMesh.VertexBuffer,

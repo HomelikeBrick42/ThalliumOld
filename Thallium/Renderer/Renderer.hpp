@@ -3,7 +3,7 @@
 #include "Thallium/Core/Base.hpp"
 #include "Thallium/Core/Ref.hpp"
 #include "Thallium/Core/Window.hpp"
-#include "Thallium/Core/Transform.hpp"
+#include "Thallium/Scene/Transform.hpp"
 
 #include "Thallium/Renderer/Material.hpp"
 #include "Thallium/Renderer/Shader.hpp"

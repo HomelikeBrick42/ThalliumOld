@@ -49,6 +49,7 @@ int main(int, char**) {
         },
         {
             .Position = { -1.0f, 0.0f, -3.0f },
+            .Rotation = glm::lookAt(glm::vec3{}, { -1.0f, 0.0f, 3.0f }, { 0.0f, 1.0f, 0.0f }),
         },
         renderer,
         camera.FOV,

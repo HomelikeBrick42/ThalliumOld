@@ -19,6 +19,18 @@ namespace Thallium {
                    glm::scale(glm::identity<glm::mat4>(), Scale);
         }
 
+        glm::vec3 GetForward() {
+            return Rotation * glm::vec3{ 0.0f, 0.0f, 1.0f };
+        }
+
+        glm::vec3 GetRight() {
+            return Rotation * glm::vec3{ 1.0f, 0.0f, 0.0f };
+        }
+
+        glm::vec3 GetUp() {
+            return Rotation * glm::vec3{ 0.0f, 1.0f, 0.0f };
+        }
+
         operator glm::mat4() {
             return ToMatrix();
         }

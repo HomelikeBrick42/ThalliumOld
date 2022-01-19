@@ -22,37 +22,29 @@ Camera::Camera(float speed, float lookSpeed, float fov, size_t width, size_t hei
 }
 
 void Camera::OnUpdate(float dt) {
-    glm::vec3 forward = Transform.Rotation * glm::vec3{ 0.0f, 0.0f, 1.0f };
-    glm::vec3 right   = Transform.Rotation * glm::vec3{ 1.0f, 0.0f, 0.0f };
-    glm::vec3 up      = Transform.Rotation * glm::vec3{ 0.0f, 1.0f, 0.0f };
-
     float deltaX = (float)MouseX / (float)Width * LookSpeed;
     float deltaY = (float)MouseY / (float)Height * LookSpeed;
 
-    Transform.Rotation = glm::rotate(glm::identity<glm::quat>(), deltaX, up) * Transform.Rotation;
-    Transform.Rotation = glm::rotate(glm::identity<glm::quat>(), deltaY, right) * Transform.Rotation;
+    Transform.Rotation = glm::rotate(glm::identity<glm::quat>(), deltaX, Transform.GetUp()) * Transform.Rotation;
+    Transform.Rotation = glm::rotate(glm::identity<glm::quat>(), deltaY, Transform.GetRight()) * Transform.Rotation;
 
     float rotationSpeed = 90.0f * LookSpeed;
     float rotation      = ((QPressed ? rotationSpeed : 0) + (EPressed ? -rotationSpeed : 0)) * dt;
-    Transform.Rotation  = glm::rotate(glm::identity<glm::quat>(), glm::radians(rotation), forward) * Transform.Rotation;
-
-    // Adjust the camera directions because it has rotated
-    forward = Transform.Rotation * glm::vec3{ 0.0f, 0.0f, 1.0f };
-    right   = Transform.Rotation * glm::vec3{ 1.0f, 0.0f, 0.0f };
-    up      = Transform.Rotation * glm::vec3{ 0.0f, 1.0f, 0.0f };
+    Transform.Rotation =
+        glm::rotate(glm::identity<glm::quat>(), glm::radians(rotation), Transform.GetForward()) * Transform.Rotation;
 
     if (WPressed)
-        Transform.Position += forward * Speed * dt;
+        Transform.Position += Transform.GetForward() * Speed * dt;
     if (SPressed)
-        Transform.Position -= forward * Speed * dt;
+        Transform.Position -= Transform.GetForward() * Speed * dt;
     if (APressed)
-        Transform.Position -= right * Speed * dt;
+        Transform.Position -= Transform.GetRight() * Speed * dt;
     if (DPressed)
-        Transform.Position += right * Speed * dt;
+        Transform.Position += Transform.GetRight() * Speed * dt;
     if (SpacePressed)
-        Transform.Position += up * Speed * dt;
+        Transform.Position += Transform.GetUp() * Speed * dt;
     if (ShiftPressed)
-        Transform.Position -= up * Speed * dt;
+        Transform.Position -= Transform.GetUp() * Speed * dt;
 
     MouseX = 0;
     MouseY = 0;

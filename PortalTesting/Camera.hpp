@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Thallium/Core/Base.hpp"
-#include "Thallium/Core/Transform.hpp"
+#include "Thallium/Scene/Transform.hpp"
 #include "Thallium/Core/Keycode.hpp"
 
 struct Camera {
