@@ -41,7 +41,7 @@ namespace Thallium {
         }
 
         explicit operator bool() const {
-            return ID != UINT64_MAX && Scene && Scene->EntityExists(ID);
+            return Scene && Scene->EntityExists(ID);
         }
 
         bool operator==(const Entity& other) const {

@@ -39,20 +39,18 @@ namespace Thallium {
         }
     private:
         template<typename ComponentType, typename SecondComponentType, typename... ComponentTypes, typename... Types>
-        void IterateComponentsImpl(EntityID entityFromParentCall,
-                                   std::function<void(EntityID, Types&...)>& func) {
+        void IterateComponentsImpl(EntityID entityFromParentCall, std::function<void(EntityID, Types&...)>& func) {
             for (auto& [entity, component] : Components.at(typeid(ComponentType))) {
-                if (!entityFromParentCall || entity == entityFromParentCall) {
+                if (!EntityExists(entityFromParentCall) || entity == entityFromParentCall) {
                     IterateComponentsImpl<SecondComponentType, ComponentTypes...>(entity, func);
                 }
             }
         }
 
         template<typename ComponentType, typename... Types>
-        void IterateComponentsImpl(EntityID entityFromParentCall,
-                                   std::function<void(EntityID, Types&...)>& func) {
+        void IterateComponentsImpl(EntityID entityFromParentCall, std::function<void(EntityID, Types&...)>& func) {
             for (auto& [entity, component] : Components.at(typeid(ComponentType))) {
-                if (!entityFromParentCall || entity == entityFromParentCall) {
+                if (!EntityExists(entityFromParentCall) || entity == entityFromParentCall) {
                     func(entity, *std::any_cast<Types>(&Components.at(typeid(Types)).at(entity))...);
                 }
             }
