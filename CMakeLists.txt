@@ -37,7 +37,10 @@ add_library(
         Thallium/Renderer/OpenGL/OpenGLVertexBuffer.cpp
         Thallium/Renderer/OpenGL/OpenGLVertexBuffer.hpp
         Thallium/Renderer/OpenGL/Windows/WindowsOpenGLRenderer.cpp
-        Thallium/Renderer/OpenGL/Windows/WindowsOpenGLRenderer.hpp)
+        Thallium/Renderer/OpenGL/Windows/WindowsOpenGLRenderer.hpp
+        Thallium/Scene/Entity.hpp
+        Thallium/Scene/Scene.cpp
+        Thallium/Scene/Scene.hpp)
 target_link_libraries(Thallium glm)
 target_compile_options(Thallium PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
 if (CMAKE_BUILD_TYPE MATCHES Release)
