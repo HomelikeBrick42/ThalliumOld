@@ -72,13 +72,3 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
     target_compile_options(PortalTesting PRIVATE -O2)
 endif ()
 target_include_directories(PortalTesting PRIVATE ./ PortalTesting vendor/glm)
-
-add_executable(
-        ECSTesting
-        ECSTesting/Main.cpp)
-target_link_libraries(ECSTesting Thallium glm)
-target_compile_options(ECSTesting PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
-if (CMAKE_BUILD_TYPE MATCHES Release)
-    target_compile_options(ECSTesting PRIVATE -O2)
-endif ()
-target_include_directories(ECSTesting PRIVATE ./ ECSTesting vendor/glm)
