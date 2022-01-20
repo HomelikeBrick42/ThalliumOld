@@ -19,10 +19,26 @@ struct Circle {
 };
 
 void UpdatePhysics(Ref<Scene> scene, float dt) {
+    std::vector<std::pair<Transform&, Circle&>> Circles;
     scene->IterateComponents(
         std::function<void(EntityID, Transform&, Circle&)>([&](EntityID id, Transform& transform, Circle& circle) {
+            Circles.emplace_back(transform, circle);
+
             transform.Position.xy += circle.Velocity * dt;
         }));
+
+    for (size_t a = 0; a < Circles.size(); a++) {
+        auto [transform_a, circle_a] = Circles[a];
+        for (size_t b = a + 1; b < Circles.size(); b++) {
+            auto [transform_b, circle_b] = Circles[b];
+            if (glm::distance(transform_a.Position, transform_b.Position) <=
+                (glm::compMul(transform_a.Scale) + glm::compMul(transform_b.Scale)) * 0.5f) {
+                glm::vec2 aToB    = glm::normalize(transform_b.Position - transform_a.Position);
+                circle_a.Velocity = glm::reflect(circle_a.Velocity, aToB);
+                circle_b.Velocity = glm::reflect(circle_b.Velocity, -aToB);
+            }
+        }
+    }
 }
 
 int main(int, char**) {
