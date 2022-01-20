@@ -288,6 +288,22 @@ namespace Thallium {
                     MouseButtonCallback(this, MouseButton_Right, false);
             } break;
 
+            case WM_MOUSEWHEEL: {
+                int8_t direction = 0;
+                if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
+                    direction = 1;
+                } else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
+                    direction = -1;
+                }
+                if (ScrollCallback && direction != 0)
+                    ScrollCallback(this, direction);
+            } break;
+
+            case WM_MOUSEMOVE: {
+                if (MouseMoveCallback)
+                    MouseMoveCallback(this, LOWORD(lParam), HIWORD(lParam));
+            } break;
+
             default: {
                 result = DefWindowProcA(hWnd, message, wParam, lParam);
             } break;

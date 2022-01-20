@@ -45,6 +45,12 @@ namespace Thallium {
         void SetMouseButtonCallback(MouseButtonCallbackFunc callback) final {
             MouseButtonCallback = callback;
         }
+        void SetScrollCallback(ScrollCallbackFunc callback) final {
+            ScrollCallback = callback;
+        }
+        void SetMouseMoveCallback(MouseMoveCallbackFunc callback) final {
+            MouseMoveCallback = callback;
+        }
         void SetRawMouseMovementCallback(RawMouseMovementCallbackFunc callback) final {
             RawMouseMovementCallback = callback;
         }
@@ -64,6 +70,8 @@ namespace Thallium {
         ResizeCallbackFunc ResizeCallback                     = nullptr;
         KeyCallbackFunc KeyCallback                           = nullptr;
         MouseButtonCallbackFunc MouseButtonCallback           = nullptr;
+        ScrollCallbackFunc ScrollCallback                     = nullptr;
+        MouseMoveCallbackFunc MouseMoveCallback               = nullptr;
         RawMouseMovementCallbackFunc RawMouseMovementCallback = nullptr;
     };
 
