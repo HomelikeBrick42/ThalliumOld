@@ -5,6 +5,7 @@
     <sourceRoots>
       <file path="$PROJECT_DIR$/ECSTesting" />
       <file path="$PROJECT_DIR$/PhysicsGame" />
+      <file path="$PROJECT_DIR$/PhysicsTesting" />
       <file path="$PROJECT_DIR$/PortalTesting" />
       <file path="$PROJECT_DIR$/Thallium" />
     </sourceRoots>
