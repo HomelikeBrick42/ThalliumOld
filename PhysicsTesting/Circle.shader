@@ -12,12 +12,12 @@ uniform sampler2D u_Texture;
 #shader vertex
 
 layout(location = 0) in vec4 a_Position;
-layout(location = 1) in vec2 a_TexCoord;
+layout(location = 1) in vec2 a_Coord;
 
-layout(location = 0) out vec2 v_TexCoord;
+layout(location = 0) out vec2 v_Coord;
 
 void main() {
-    v_TexCoord = a_TexCoord;
+    v_Coord = a_Coord;
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * a_Position;
 }
 
@@ -25,8 +25,11 @@ void main() {
 
 layout(location = 0) out vec4 o_Color;
 
-layout(location = 0) in vec2 v_TexCoord;
+layout(location = 0) in vec2 v_Coord;
 
 void main() {
-    o_Color = texture(u_Texture, v_TexCoord) * u_Color;
+    if (dot(v_Coord, v_Coord) > 1.0) {
+        discard;
+    }
+    o_Color = u_Color;
 }
