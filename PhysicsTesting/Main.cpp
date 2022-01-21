@@ -65,7 +65,7 @@ int main(int, char**) {
     Ref<Window> window = Window::Create(640, 480, "2D Physics");
 
     bool running = true;
-    window->SetCloseCallback([&](Ref<Window>) {
+    window->SetCloseCallback([&](Window&) {
         running = false;
     });
 
@@ -83,11 +83,11 @@ int main(int, char**) {
 
     glm::mat4 cameraProjectionMatrix = calculateProjectionMatrix();
 
-    window->SetResizeCallback([&](Ref<Window>, uint32_t width, uint32_t height) {
+    window->SetResizeCallback([&](Window&, uint32_t width, uint32_t height) {
         cameraProjectionMatrix = calculateProjectionMatrix();
     });
 
-    window->SetScrollCallback([&](Ref<Window>, int8_t direction) {
+    window->SetScrollCallback([&](Window&, int8_t direction) {
         if (direction > 0) {
             cameraZoom -= cameraZoom * 0.1f;
         } else if (direction < 0) {
@@ -97,7 +97,7 @@ int main(int, char**) {
     });
 
     bool keys[KeyCode_MaxCount] = {};
-    window->SetKeyCallback([&](Ref<Window>, KeyCode key, bool pressed) {
+    window->SetKeyCallback([&](Window&, KeyCode key, bool pressed) {
         keys[key] = pressed;
     });
 

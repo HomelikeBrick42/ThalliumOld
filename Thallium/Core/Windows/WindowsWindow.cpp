@@ -128,7 +128,7 @@ namespace Thallium {
         }
 
         WindowsWindow* window = reinterpret_cast<WindowsWindow*>(GetWindowLongPtrA(hWnd, GWLP_USERDATA));
-        if (window && window->GetRefCount() > 0) // TODO: Do we check the ref count here?
+        if (window)
             return window->WindowMessageCallback(hWnd, message, wParam, lParam);
         return DefWindowProcA(hWnd, message, wParam, lParam);
     }
@@ -141,7 +141,7 @@ namespace Thallium {
             case WM_DESTROY:
             case WM_CLOSE: {
                 if (CloseCallback)
-                    CloseCallback(this);
+                    CloseCallback(*this);
             } break;
 
             case WM_SIZE: {
@@ -153,7 +153,7 @@ namespace Thallium {
                     if (windowWidth > 0 && windowHeight > 0) {
                         Width  = static_cast<uint32_t>(windowWidth);
                         Height = static_cast<uint32_t>(windowHeight);
-                        ResizeCallback(this, Width, Height);
+                        ResizeCallback(*this, Width, Height);
                     }
                 }
             } break;
@@ -211,7 +211,7 @@ namespace Thallium {
                         } break;
                     }
                     for (size_t i = 0; i < (size_t)(lParam & 0xFFFF); i++) {
-                        KeyCallback(this, key, pressed);
+                        KeyCallback(*this, key, pressed);
                     }
                 }
                 result = DefWindowProcA(hWnd, message, wParam, lParam);
@@ -254,38 +254,38 @@ namespace Thallium {
                     RAWINPUT* input = reinterpret_cast<RAWINPUT*>(bytes);
                     int32_t mouseX  = static_cast<int32_t>(input->data.mouse.lLastX);
                     int32_t mouseY  = static_cast<int32_t>(input->data.mouse.lLastY);
-                    RawMouseMovementCallback(this, mouseX, mouseY);
+                    RawMouseMovementCallback(*this, mouseX, mouseY);
                 }
             } break;
 
             case WM_LBUTTONDOWN: {
                 if (MouseButtonCallback)
-                    MouseButtonCallback(this, MouseButton_Left, true);
+                    MouseButtonCallback(*this, MouseButton_Left, true);
             } break;
 
             case WM_LBUTTONUP: {
                 if (MouseButtonCallback)
-                    MouseButtonCallback(this, MouseButton_Left, false);
+                    MouseButtonCallback(*this, MouseButton_Left, false);
             } break;
 
             case WM_MBUTTONDOWN: {
                 if (MouseButtonCallback)
-                    MouseButtonCallback(this, MouseButton_Middle, true);
+                    MouseButtonCallback(*this, MouseButton_Middle, true);
             } break;
 
             case WM_MBUTTONUP: {
                 if (MouseButtonCallback)
-                    MouseButtonCallback(this, MouseButton_Middle, false);
+                    MouseButtonCallback(*this, MouseButton_Middle, false);
             } break;
 
             case WM_RBUTTONDOWN: {
                 if (MouseButtonCallback)
-                    MouseButtonCallback(this, MouseButton_Right, true);
+                    MouseButtonCallback(*this, MouseButton_Right, true);
             } break;
 
             case WM_RBUTTONUP: {
                 if (MouseButtonCallback)
-                    MouseButtonCallback(this, MouseButton_Right, false);
+                    MouseButtonCallback(*this, MouseButton_Right, false);
             } break;
 
             case WM_MOUSEWHEEL: {
@@ -296,12 +296,12 @@ namespace Thallium {
                     direction = -1;
                 }
                 if (ScrollCallback && direction != 0)
-                    ScrollCallback(this, direction);
+                    ScrollCallback(*this, direction);
             } break;
 
             case WM_MOUSEMOVE: {
                 if (MouseMoveCallback)
-                    MouseMoveCallback(this, LOWORD(lParam), HIWORD(lParam));
+                    MouseMoveCallback(*this, LOWORD(lParam), HIWORD(lParam));
             } break;
 
             default: {

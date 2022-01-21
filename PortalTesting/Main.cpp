@@ -33,7 +33,7 @@ int main(int, char**) {
     Ref<Renderer> renderer = Renderer::CreateOpenGLRenderer(window);
 
     bool running = true;
-    window->SetCloseCallback([&](Ref<Window>) {
+    window->SetCloseCallback([&](Window&) {
         running = false;
     });
 
@@ -56,18 +56,18 @@ int main(int, char**) {
         1024,
         1024);
 
-    window->SetResizeCallback([&](Ref<Window>, uint32_t width, uint32_t height) {
+    window->SetResizeCallback([&](Window&, uint32_t width, uint32_t height) {
         framebuffer->Resize(width, height);
         camera.Width  = width;
         camera.Height = height;
         camera.UpdateProjectionMatrix();
     });
 
-    window->SetKeyCallback([&](Ref<Window>, KeyCode key, bool pressed) {
+    window->SetKeyCallback([&](Window&, KeyCode key, bool pressed) {
         camera.OnKey(key, pressed);
     });
 
-    window->SetRawMouseMovementCallback([&](Ref<Window>, int32_t x, int32_t y) {
+    window->SetRawMouseMovementCallback([&](Window&, int32_t x, int32_t y) {
         camera.OnMouseMove(x, y);
     });
 

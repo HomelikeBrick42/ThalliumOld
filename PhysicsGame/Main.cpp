@@ -104,7 +104,7 @@ int main(int, char**) {
     Ref<Renderer> renderer = Renderer::CreateOpenGLRenderer(window);
 
     bool running = true;
-    window->SetCloseCallback([&](Ref<Window> window) {
+    window->SetCloseCallback([&](Window&) {
         running = false;
     });
 
@@ -115,14 +115,14 @@ int main(int, char**) {
     glm::mat4 projectionMatrix =
         glm::perspective(glm::radians(60.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.001f, 1000.0f);
 
-    window->SetResizeCallback([&](Ref<Window> window, uint32_t width, uint32_t height) {
+    window->SetResizeCallback([&](Window&, uint32_t width, uint32_t height) {
         projectionMatrix =
             glm::perspective(glm::radians(60.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.001f, 1000.0f);
     });
 
     // TODO: Should the window keep track of this?
     bool keys[KeyCode_MaxCount] = {};
-    window->SetKeyCallback([&](Ref<Window> window, KeyCode key, bool pressed) {
+    window->SetKeyCallback([&](Window&, KeyCode key, bool pressed) {
         keys[key] = pressed;
 
         if (key == KeyCode_Escape && pressed) {
@@ -135,7 +135,7 @@ int main(int, char**) {
     });
 
     glm::ivec2 mouseMovement = {};
-    window->SetRawMouseMovementCallback([&](Ref<Window> window, int32_t deltaX, int32_t deltaY) {
+    window->SetRawMouseMovementCallback([&](Window& window, int32_t deltaX, int32_t deltaY) {
         mouseMovement.x += deltaX;
         mouseMovement.y += deltaY;
     });
@@ -147,7 +147,7 @@ int main(int, char**) {
     Point* selectedPoint = nullptr;
     float selectedPointDistance;
     glm::vec3 selectedPointOffset;
-    window->SetMouseButtonCallback([&](Ref<Window> window, MouseButton button, bool pressed) {
+    window->SetMouseButtonCallback([&](Window& window, MouseButton button, bool pressed) {
         if (button == MouseButton_Left) {
             if (pressed) {
                 glm::vec3 cameraForward = cameraTransform.Rotation * glm::vec3{ 0.0f, 0.0f, 1.0f };

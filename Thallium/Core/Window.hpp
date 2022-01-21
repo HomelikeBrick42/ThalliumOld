@@ -13,13 +13,13 @@ namespace Thallium {
     protected:
         Window() = default;
     public:
-        using CloseCallbackFunc            = std::function<void(Ref<Window> window)>;
-        using ResizeCallbackFunc           = std::function<void(Ref<Window> window, uint32_t width, uint32_t height)>;
-        using KeyCallbackFunc              = std::function<void(Ref<Window> window, KeyCode key, bool pressed)>;
-        using MouseButtonCallbackFunc      = std::function<void(Ref<Window> window, MouseButton button, bool pressed)>;
-        using ScrollCallbackFunc           = std::function<void(Ref<Window> window, int8_t direction)>;
-        using MouseMoveCallbackFunc        = std::function<void(Ref<Window> window, int32_t x, int32_t y)>;
-        using RawMouseMovementCallbackFunc = std::function<void(Ref<Window> window, int32_t deltaX, int32_t deltaY)>;
+        using CloseCallbackFunc            = std::function<void(Window& window)>;
+        using ResizeCallbackFunc           = std::function<void(Window& window, uint32_t width, uint32_t height)>;
+        using KeyCallbackFunc              = std::function<void(Window& window, KeyCode key, bool pressed)>;
+        using MouseButtonCallbackFunc      = std::function<void(Window& window, MouseButton button, bool pressed)>;
+        using ScrollCallbackFunc           = std::function<void(Window& window, int8_t direction)>;
+        using MouseMoveCallbackFunc        = std::function<void(Window& window, int32_t x, int32_t y)>;
+        using RawMouseMovementCallbackFunc = std::function<void(Window& window, int32_t deltaX, int32_t deltaY)>;
     public:
         Window(const Window&) = delete;
         Window(Window&&)      = delete;
