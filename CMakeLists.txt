@@ -75,7 +75,7 @@ target_include_directories(PortalTesting PRIVATE ./ PortalTesting vendor/glm)
 
 add_executable(
         PhysicsTesting
-        PhysicsTesting/Main.cpp PhysicsTesting/Main.cpp)
+        PhysicsTesting/Main.cpp)
 target_link_libraries(PhysicsTesting Thallium glm)
 target_compile_options(PhysicsTesting PRIVATE -DGLM_FORCE_SWIZZLE -DGLM_FORCE_LEFT_HANDED -D_USE_MATH_DEFINES)
 if (CMAKE_BUILD_TYPE MATCHES Release)

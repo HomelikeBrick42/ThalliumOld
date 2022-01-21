@@ -9,7 +9,15 @@ namespace Thallium {
 
     Scene::Scene() {}
 
-    Scene::~Scene() {}
+    Scene::~Scene() {
+        for (auto& [component_id, entities] : Components) {
+            if (RemoveComponentCallbacks.contains(component_id) && RemoveComponentCallbacks[component_id]) {
+                for (auto& [entity, component] : entities) {
+                    RemoveComponentCallbacks[component_id](*this, entity);
+                }
+            }
+        }
+    }
 
     Ref<Scene> Scene::Create() {
         return new Scene();
@@ -24,6 +32,9 @@ namespace Thallium {
     void Scene::DestroyEntity(EntityID entity) {
         assert(EntityExists(entity));
         for (auto& component : Entities.at(entity)) {
+            if (RemoveComponentCallbacks.contains(component) && RemoveComponentCallbacks[component]) {
+                RemoveComponentCallbacks[component](*this, entity);
+            }
             Components.at(component).erase(Components.at(component).find(entity));
         }
         Entities.erase(Entities.find(entity));
@@ -41,12 +52,18 @@ namespace Thallium {
         }
         Components.at(value.type()).emplace(entity, std::move(value));
         Entities.at(entity).insert(value.type());
+        if (AddComponentCallbacks.contains(value.type()) && AddComponentCallbacks[value.type()]) {
+            AddComponentCallbacks[value.type()](*this, entity);
+        }
         return Components.at(value.type()).at(entity);
     }
 
     void Scene::RemoveComponent(EntityID entity, std::type_index type) {
         assert(EntityExists(entity));
         assert(HasComponent(entity, type));
+        if (RemoveComponentCallbacks.contains(type) && RemoveComponentCallbacks[type]) {
+            RemoveComponentCallbacks[type](*this, entity);
+        }
         Entities.at(entity).erase(Entities.at(entity).find(type));
         Components.at(type).erase(Components.at(type).find(entity));
     }

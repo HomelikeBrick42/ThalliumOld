@@ -12,6 +12,8 @@
 
 #include <glm/glm.hpp>
 
+#include <iostream>
+
 using namespace Thallium;
 
 struct Circle {
@@ -43,6 +45,14 @@ void UpdatePhysics(Ref<Scene> scene, float dt) {
 
 int main(int, char**) {
     Ref<Scene> scene = Scene::Create();
+
+    scene->SetAddComponentCallback<Circle>([&](Scene&, EntityID id, Circle& circle) {
+        std::cout << "Circle Added!" << std::endl;
+    });
+
+    scene->SetRemoveComponentCallback<Circle>([&](Scene&, EntityID id, Circle& circle) {
+        std::cout << "Circle Removed!" << std::endl;
+    });
 
     Entity a(scene);
     a.AddComponent<Transform>({ .Position = { 2.0f, 0.0f, 0.0f } });

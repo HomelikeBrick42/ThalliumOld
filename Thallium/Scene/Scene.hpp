@@ -25,6 +25,20 @@ namespace Thallium {
         static Ref<Scene> Create();
     public:
         template<typename T>
+        void SetAddComponentCallback(std::function<void(Scene&, EntityID, T&)> callback) {
+            AddComponentCallbacks[typeid(T)] = [=](Scene& scene, EntityID id) {
+                callback(scene, id, *any_cast<T>(&GetComponent(id, typeid(T))));
+            };
+        }
+
+        template<typename T>
+        void SetRemoveComponentCallback(std::function<void(Scene&, EntityID, T&)> callback) {
+            RemoveComponentCallbacks[typeid(T)] = [=](Scene& scene, EntityID id) {
+                callback(scene, id, *any_cast<T>(&GetComponent(id, typeid(T))));
+            };
+        }
+
+        template<typename T>
         void IterateComponent(std::function<void(EntityID, T&)> func) {
             if (Components.contains(typeid(T))) {
                 for (auto& [entityID, component] : Components.at(typeid(T))) {
@@ -67,6 +81,8 @@ namespace Thallium {
         EntityID CurrentEntityID = 0;
         std::unordered_map<EntityID, std::set<std::type_index>> Entities;
         std::unordered_map<std::type_index, std::unordered_map<EntityID, std::any>> Components;
+        std::unordered_map<std::type_index, std::function<void(Scene&, EntityID)>> AddComponentCallbacks;
+        std::unordered_map<std::type_index, std::function<void(Scene&, EntityID)>> RemoveComponentCallbacks;
     };
 
 }
